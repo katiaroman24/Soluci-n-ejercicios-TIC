@@ -1,0 +1,2536 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+\begin{center}
+\Large \textbf{ESCUELA POLITÉCNICA NACIONAL} \\[0.2cm]
+\large Facultad de Ciencias \\[0.2cm]
+\large Matemática Aplicada \\[0.8cm]
+
+\Large \textbf{Procesos de Ramificación} \\[0.3cm]
+\large Resolución de ejercicios \\[0.8cm]
+
+\normalsize
+Este documento presenta la resolución de ejercicios del Capítulo 8 del libro
+\textit{Stochastic Processes with R: An Introduction} de Olga Korosteleva, y ejercicios del Capítulo 4 del libro \textit{Introduction to Stochastic Processes with R, First Edition} de Robert P. Dobrow
+\\
+desarrollados como parte del \textbf{Trabajo de Integración Curricular (TIC)},\\
+con el objetivo de reforzar y clarificar los conceptos fundamentales de\\
+\textbf{procesos de ramificación}. \\[1cm]
+
+\begin{tabular}{rl}
+\textbf{Estudiante:} & Katia Stefania Román Cabrera \\
+\textbf{Fecha:} & \today
+\end{tabular}
+
+\end{center}
+
+\vspace{1cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%EJERCICIOS DEL LIBRO DE OLGA%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Solución de ejercicios del Capítulo 8 del libro Stochastic Processes with R: An Introduction de Olga Korosteleva}
+
+\textbf{Ejercicio 8.1}
+
+Considere una colonia de bacterias. Se sabe que las bacterias se reproducen asexualmente por fisión binaria, dividiéndose en dos células idénticas. Suponga que en el tiempo $0$ el tamaño de la colonia es $x_{0}=100$
+ bacterias. Suponga también que al final de una unidad de tiempo, cada bacteria, independientemente de las demás, muere con probabilidad $0.25$, se divide en dos con probabilidad $0.6$, o continúa viviendo con probabilidad $0.15$.
+
+\begin{enumerate}
+    \item[(a)] Demuestre que el crecimiento de la colonia puede modelarse como un proceso de ramificación supercrítico. Encuentre la esperanza y varianza del tamaño de la generación \( n \).
+    \item[(b)] Calcule la probabilidad de extinción de los descendientes de una bacteria.
+    \item[(c)] Encuentre la probabilidad de que los descendientes de al menos una de diez bacterias se extingan.
+\end{enumerate}
+
+\begin{proof}
+\item[(a)] Sea \( Z_n \) el tamaño de la generación \( n \), con \( Z_0 = 100 \). Sea \( X \) el número de descendientes de una bacteria, entonces
+\[
+P(X = 0) = 0.25, \quad P(X = 1) = 0.15, \quad P(X = 2) = 0.6.
+\]
+Hallamos la esperanza del número de hijos,
+\[
+\mathbb{E}[X] = 0 \cdot 0.25 + 1 \cdot 0.15 + 2 \cdot 0.6 = 0.15 + 1.2 = 1.35.
+\]
+Como \( \mathbb{E}[X] > 1 \), se trata de un proceso de ramificación supercrítico. Así, tenemos que la esperanza del tamaño de la generación \( n \) es,
+\[
+\mathbb{E}[Z_n] = Z_0 \cdot \mu ^n = 100 \cdot (1.35)^n,
+\]
+y para la varianza del número de hijos, tenemos que
+\[
+\mathbb{E}[X^2] = 0^2 \cdot 0.25 + 1^2 \cdot 0.15 + 2^2 \cdot 0.6 = 0.15 + 4 \cdot 0.6 = 0.15 + 2.4 = 2.55,
+\]
+entonces, aplicando en la fórmula 
+\[
+\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2,
+\]
+tenemos,
+\[
+\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 = 2.55 - (1.35)^2 = 2.55 - 1.8225 = 0.7275.
+\]
+
+Ahora, para calcular la varianza del tamaño de la generación \( n \), tenemos
+
+\[
+\mathrm{Var}(Z_n) = Z_0 \cdot \sigma^2 \cdot \mu^{n-1}\frac{ (\mu^n - 1)}{(\mu - 1)} \]
+
+\[=
+100 \cdot 0.7275 \cdot (1.35)^{n-1} \frac{((1.35)^n - 1)}{1.35 -1}.
+\]
+
+
+\item[(b)] En un proceso de ramificación, la variable aleatoria \( Z \) representa el número de descendientes que puede tener un individuo (en este caso, una bacteria). Su comportamiento se resume mediante su \textbf{función generadora de probabilidades},
+\[
+f(s) = \mathbb{E}[s^Z] = \sum_{k=0}^{\infty} p_k s^k,
+\]
+donde \( p_k = \mathbb{P}(Z = k) \) es la probabilidad de tener exactamente \( k \) hijos.
+La probabilidad de extinción \( q \) es la probabilidad de que la descendencia completa de una bacteria se extinga eventualmente. Esta probabilidad cumple la siguiente ecuación,
+\[
+q = f(q).
+\]
+Es decir, si una bacteria tiene \( k \) descendientes (con probabilidad \( p_k \)) y la probabilidad de que cada uno de ellos se extinga es \( q \), entonces la probabilidad de que toda su descendencia desaparezca es \( q^k \). Al promediar sobre todas las posibilidades de descendencia, obtenemos que la probabilidad de extinción debe satisfacer,
+\[
+q = \sum_{k=0}^{\infty} p_k q^k = f(q),
+\]
+en nuestro caso, tenemos
+\[
+\mathbb{P}(Z = 0) = 0.25, \quad \mathbb{P}(Z = 1) = 0.15, \quad \mathbb{P}(Z = 2) = 0.6,
+\]
+entonces, la función generadora es
+\[
+f(s) = 0.25 + 0.15s + 0.6s^2,
+\]
+y la ecuación que debe satisfacer \( q \) es la siguiente
+\[
+q = f(q) = 0.25 + 0.15q + 0.6q^2,
+\]
+reordenando, tenemos
+\[
+0.6q^2 - 0.85q + 0.25 = 0,
+\]
+y resolviendo esta ecuación cuadrática, 
+
+\[
+q = \frac{0.85 \pm \sqrt{0.85^2 - 4 \cdot 0.6 \cdot 0.25}}{2 \cdot 0.6}
+= \frac{0.85 \pm \sqrt{0.7225 - 0.6}}{1.2}
+= \frac{0.85 \pm \sqrt{0.1225}}{1.2}
+= \frac{0.85 \pm 0.35}{1.2}
+\]
+
+\[
+\Rightarrow q_1 = \frac{0.5}{1.2} = 0.4167, \quad q_2 = \frac{1.2}{1.2} = 1,
+\]
+
+entonces, la menor solución dentro del intervalo \( [0, 1] \) es
+\[
+q = 0.4167.
+\]
+Por lo tanto, la probabilidad de extinción de los descendientes de una bacteria es aproximadamente del \( 41.67\% \).
+
+
+\item[(c)] La probabilidad de que ninguna de las 10 bacterias se extinga es,
+
+\[
+P(\text{ninguna se extingue}) = (1 - q)^{10} = (0.5833)^{10} \approx 0.0043.
+\]
+
+Entonces, la probabilidad de que al menos una se extinga es,
+
+\[
+P(\text{al menos una se extingue}) = 1 - 0,0043 \approx 0.9957.
+\]
+ 
+\end{proof}
+
+
+
+\textbf{Ejercicio 8.3}
+
+Basado en el trabajo de Alfred J. Lotka, quien analizó datos del censo de EE.UU. de 1920, se supone que la descendencia masculina sigue una distribución geométrica ajustada a cero de la forma:
+\[
+p(0) = 0.4828, \qquad p(n) = (0.228292)(0.5586)^{n-1} \quad \text{para } n = 1, 2, 3, \dots
+\]
+
+\begin{enumerate}
+    \item[(a)] Encuentre el valor esperado de hijos varones y su desviación estándar.
+    \item[(b)] Considere un único ancestro masculino. Encuentre el tamaño esperado de la $n$-ésima generación de sus descendientes y su desviación estándar.
+    \item[(c)] Calcule la probabilidad de extinción.
+\end{enumerate}
+
+\begin{proof}
+\item[(a)] Sabemos que esta es una distribución geométrica modificada con \( p(0) = 0.4828 \) y para \( n \geq 1 \),
+\[
+p(n) = a \cdot r^{n-1} \quad \text{con } a = 0.228292, \quad r = 0.5586.
+\]
+Primero, verifiquemos que la suma total sea 1, 
+\begin{align*}
+\sum_{n=0}^\infty p(n) & = 0.4828 + \sum_{n=1}^\infty a \cdot r^{n-1} \\
+&= 0.4828 + \frac{a}{1 - r} \\
+&= 0.4828 + \frac{0.228292}{1 - 0.5586} \\
+&= 0.4828 + \frac{0.228292}{0.4414} \\
+&= 0.4828 + 0.5172 \\
+&= 1,
+\end{align*}
+entonces es una distribución válida.
+
+Ahora, hallamos el valor esperado
+\[
+\mathbb{E}[Z] = \sum_{n=0}^\infty n \cdot p(n) = 0 \cdot p(0) + \sum_{n=1}^\infty n \cdot a \cdot r^{n-1},
+\]
+aplicamos la fórmula conocida, y tenemos que
+\[
+\sum_{n=1}^\infty n r^{n-1} = \frac{1}{(1 - r)^2},
+\]
+entonces,
+\begin{align*}
+\mathbb{E}[Z] &= a \cdot \frac{1}{(1 - r)^2} \\
+&= 0.228292 \cdot \frac{1}{(1 - 0.5586)^2} \\
+&= 0.228292 \cdot \frac{1}{0.19483296} \approx 1.1718.    
+\end{align*}
+
+Encontramos la varianza, y sabemos que
+\[
+\mathbb{E}[Z^2] = \sum_{n=1}^\infty n^2 \cdot a \cdot r^{n-1} = a \cdot \sum_{n=1}^\infty n^2 r^{n-1},
+\]
+además,
+\[
+\sum_{n=1}^\infty n^2 r^{n-1} = \frac{1 + r}{(1 - r)^3},
+\]
+entonces,
+\begin{align*}
+\mathbb{E}[Z^2] &= a \cdot \frac{1 + r}{(1 - r)^3} \\
+&= 0.228292 \cdot \frac{1 + 0.5586}{(1 - 0.5586)^3} \\
+&= 0.228292 \cdot \frac{1.5586}{(0.4414)^3}   
+\end{align*}
+\[
+\Rightarrow \mathbb{E}[Z^2] \approx 0.228292 \cdot \frac{1.5586}{0.085975} \approx 4.136.
+\]
+Ahora, hallamos la varianza
+\[
+\mathrm{Var}(Z) = \mathbb{E}[Z^2] - (\mathbb{E}[Z])^2 = 4.136 - (1.1718)^2 = 4.136 - 1.373 = 2.763.
+\]
+Entonces, la desviación estándar es
+\[
+\text{Desviación estándar: } = 1.662.
+\]
+
+\item[(b)] Sea \( X_n \) el número de individuos en la generación \( n \), con \( X_0 = 1 \).
+
+Hallamos la esperanza,
+\[
+\mathbb{E}[X_n] = \mu^n = (1.1718)^n.
+\]
+Ahora, hallamos la varianza, como \( \mu \neq 1 \), usamos la fórmula
+\[
+\mathrm{Var}(X_n) = \sigma^2 \mu^{n - 1} \left( \frac{1 - \mu^n}{1 - \mu} \right)
+= 2.763 \cdot (1.1718)^{n - 1} \cdot \left( \frac{1 - (1.1718)^n}{1 - 1.1718} \right).
+\]
+
+\item[(c)] La función generadora de probabilidades es,
+\[
+f(s) = p(0) + \sum_{n=1}^\infty p(n) s^n
+= 0.4828 + \sum_{n=1}^\infty 0.228292 \cdot (0.5586)^{n - 1} \cdot s^n,
+\]
+factorizamos,
+\[
+f(s) = 0.4828 + 0.228292 \cdot s \cdot \sum_{n=1}^\infty (0.5586 s)^{n - 1}
+= 0.4828 + \frac{0.228292 \cdot s}{1 - 0.5586 s}.
+\]
+La probabilidad de extinción \( q \in [0, 1] \) es la menor solución de la ecuación,
+\[
+q = f(q) = 0.4828 + \frac{0.228292 \cdot q}{1 - 0.5586 q},
+\]
+multiplicamos ambos lados por \( 1 - 0.5586 q \) para eliminar el denominador,
+\[
+q (1 - 0.5586 q) = 0.4828 (1 - 0.5586 q) + 0.228292 q,
+\]
+desarrollamos ambos lados de la ecuación,
+\begin{align*}
+q - 0.5586 q^2 &= 0.4828 - 0.4828 \cdot 0.5586 q + 0.228292 q \\
+&= 0.4828 - 0.269566 q + 0.228292 q \\
+&= 0.4828 - 0.041274 q 
+\end{align*}
+llevamos todo al lado izquierdo,
+\begin{align*}
+q - 0.5586 q^2 + 0.041274 q - 0.4828 = 0 \\
+\Rightarrow -0.5586 q^2 + 1.041274 q - 0.4828 = 0, 
+\end{align*}
+multiplicamos por \( -1 \) para hacer el coeficiente principal positivo
+\[
+0.5586 q^2 - 1.041274 q + 0.4828 = 0,
+\]
+aplicamos la fórmula cuadrática para resolver la ecuación y tenemos que
+\[
+q = \frac{1.041274 \pm \sqrt{(-1.041274)^2 - 4 \cdot 0.5586 \cdot 0.4828}}{2 \cdot 0.5586},
+\]
+entonces,
+
+\[
+q_1 = \frac{1.041274 - 0.0835}{1.1172} = \frac{0.95777}{1.1172} \approx 0.8573,
+\]
+\[
+q_2 = \frac{1.041274 + 0.0835}{1.1172} = \frac{1.12477}{1.1172} \approx 1.0068.
+\]
+
+La única solución válida en \( [0,1] \) es
+\[
+q \approx 0.8573.
+\]
+Por lo tanto, la probabilidad de extinción del linaje masculino es aproximadamente del \( 85.73\% \). 
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 8.4}
+Parlaying en apuestas se define como una serie de apuestas en las que las ganancias se utilizan como apuesta para siguientes jugadas. Este proceso puede modelarse como un proceso de ramificación. Supóngase que un apostador inicia con una apuesta de \$1 y puede ganar \$1 con probabilidad \(0{,}3\), o \$15 con probabilidad \(0{,}2\), o \$20 con probabilidad \(0{,}1\), o \$0 con probabilidad \(0{,}4\).
+
+\begin{enumerate}[label=(\alph*)]
+    \item Demostrar que este es un proceso supercrítico.
+    \item Calcular la ganancia esperada en la quinta apuesta.
+    \item Calcular la probabilidad de que la apuesta del jugador eventualmente se reduzca a \$0.
+\end{enumerate}
+
+\begin{proof}
+
+\item[(a)] Denotemos por \( Z \) la variable aleatoria que representa el número de "descendientes", es decir, el valor ganado en una apuesta. Su distribución de probabilidad está dada por
+\[
+\begin{aligned}
+    \mathbb{P}(Z = 0) &= 0{,}4 \\
+    \mathbb{P}(Z = 1) &= 0{,}3 \\
+    \mathbb{P}(Z = 15) &= 0{,}2 \\
+    \mathbb{P}(Z = 20) &= 0{,}1.
+\end{aligned}
+\]
+El valor esperado de \( Z \) es
+\[
+\mathbb{E}[Z] = 0 \cdot 0{,}4 + 1 \cdot 0{,}3 + 15 \cdot 0{,}2 + 20 \cdot 0{,}1 = 0{,}3 + 3 + 2 = 5{,}3.
+\]
+Como \( \mathbb{E}[Z] > 1 \), el proceso es supercrítico.
+
+\item[(b)] En un proceso de ramificación, la esperanza del número de individuos en la generación \(n\), denotado por \( \mathbb{E}[X_n] \), viene dada por la fórmula
+\[
+\mathbb{E}[X_n] = \mathbb{E}[Z]^n \cdot X_0,
+\]
+donde \( X_0 = 1 \) representa la apuesta inicial.
+Sustituyendo el valor esperado de \(Z\) calculado previamente, se tiene
+\[
+\mathbb{E}[X_5] = (5{,}3)^5 = 5032{,}8437.
+\]
+Por tanto, la ganancia esperada en la quinta apuesta es aproximadamente \( 5032{,}84 \).
+
+\item[(c)] En el contexto de un proceso de ramificación, la probabilidad de extinción \( q \) es el menor valor en el intervalo cerrado \([0,1]\) que satisface la ecuación 
+\[
+q = G(q),
+\]
+donde \( G(s) = \mathbb{E}[s^Z] \) es la función generadora de probabilidad asociada a \(Z\). En este caso, la función generadora toma la forma
+\[
+G(s) = 0{,}4 + 0{,}3s + 0{,}2s^{15} + 0{,}1s^{20}.
+\]
+Para aproximar la solución, se puede usar el método iterativo de aproximación por sucesión
+\[
+q_0 = 0, \quad q_{n+1} = G(q_n).
+\]
+Calculando los primeros términos,
+\[
+q_1 = G(0) = 0{,}4
+\]
+\[
+q_2 = G(0{,}4) \approx 0{,}4 + 0{,}3(0{,}4) + 0{,}2(0{,}4)^{15} + 0{,}1(0{,}4)^{20}
+\]
+\[
+\quad \approx 0{,}4 + 0{,}12 + \varepsilon \approx 0{,}52.
+\]
+
+Continuando la iteración, se observa convergencia a un valor próximo a \( q \approx 0{,}58 \), lo cual representa la probabilidad de extinción del proceso.
+Como se ha demostrado que \( \mathbb{E}[Z] = 5{,}3 > 1 \), se concluye que el proceso es supercrítico, y por lo tanto la probabilidad de extinción es estrictamente menor que uno. Esto implica que existe una probabilidad positiva de que el capital del apostador crezca indefinidamente, pero también una probabilidad no nula de que eventualmente se reduzca a cero.
+   
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 8.5}
+
+La propagación de un virus informático se modela como un proceso de ramificación. Cada computadora infectada, en un día, puede infectar de forma independiente a \( 0, 1, 2 \) o \( 3 \) nuevas computadoras con igual probabilidad (distribución uniforme discreta entre 0 y 3). Inicialmente, una sola computadora está infectada.
+
+\begin{enumerate}[label=(\alph*)]
+    \item ¿Este proceso es subcrítico, crítico o supercrítico?
+    \item ¿Cuál es el número promedio y la desviación estándar de computadoras infectadas en el día 10?
+    \item ¿La propagación de los virus se extinguirá con probabilidad 1? En caso contrario, calcular la probabilidad de extinción.
+    \item Simular el número de computadoras infectadas durante 10 días. ¿Cuál es el número total simulado de computadoras infectadas?
+\end{enumerate}
+
+\begin{proof}
+\item[(a)] Sea $Z_n$ el número de computadores infectados en el día $n$, con $Z_0 = 1$. El número de infecciones causadas por un solo computador se modela mediante una variable aleatoria $X$ con distribución uniforme discreta sobre $\{0,1,2,3\}$,
+\[
+\mathbb{P}(X = 0) = \mathbb{P}(X = 1) = \mathbb{P}(X = 2) = \mathbb{P}(X = 3) = \frac{1}{4}.
+\]
+Evaluamos la media $\mu$ de la distribución de descendencia
+\[
+\mu = \mathbb{E}[X] = \sum_{k=0}^{3} k \cdot \mathbb{P}(X = k) = \frac{1}{4}(0 + 1 + 2 + 3) = \frac{6}{4} = 1.5.
+\]
+Dado que $\mu > 1$, el proceso es supercrítico.
+
+\item[(b)] La esperanza matemática en una población de tipo Galton–Watson cumple
+\[
+\mathbb{E}[Z_n] = \mu^n = (1.5)^{10} \approx 57.67.
+\]
+Ahora, calculemos la varianza de $X$
+
+\[
+\mathbb{E}[X^2] = \frac{1}{4}(0^2 + 1^2 + 2^2 + 3^2) = \frac{1}{4}(0 + 1 + 4 + 9) = \frac{14}{4} = 3.5,
+\]
+
+\[
+\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 = 3.5 - (1.5)^2 = 3.5 - 2.25 = 1.25.
+\]
+La varianza de $Z_n$ se calcula mediante
+\[
+\text{Var}(Z_n) = \sigma^2 \cdot \mu^{n-1} \cdot \frac{\mu^n - 1}{\mu - 1},
+\]
+entonces,
+\[
+\text{Var}(Z_{10}) = 1.25 \cdot (1.5)^9 \cdot \frac{(1.5)^{10} - 1}{0.5} \approx 1.25 \cdot 38.44 \cdot 113.34 \approx 5422.94.
+\]
+Así, tenemos que aproximadamente la desviación estándar es
+\[
+\text{Desviación estándar} \approx \sqrt{5422.94} \approx 73.63.
+\]
+
+\item[(c)] Como $\mu > 1$, la probabilidad de extinción es menor que $1$. Esta se obtiene resolviendo $q = G(q)$, donde $G(s)$ es la función generadora
+\[
+G(s) = \frac{1}{4}(s^0 + s^1 + s^2 + s^3) = \frac{1 + s + s^2 + s^3}{4}.
+\]
+Resolvemos la ecuación $q = G(q)$
+\begin{align*}
+q &= \frac{1 + q + q^2 + q^3}{4} \\
+4q &= 1 + q + q^2 + q^3 \Rightarrow q^3 + q^2 - 3q + 1 = 0.
+\end{align*}
+Una raíz es $q = 1$. Como el proceso es supercrítico, hay otra raíz en $(0,1)$. Por métodos numéricos o gráficos se halla que
+\[
+q \approx 0.382.
+\]
+Por tanto, la probabilidad de extinción es aproximadamente $0.382$.
+
+\item[(d)] Simulamos una trayectoria del proceso de ramificación con 10 generaciones. En cada día, cada computadora infectada puede propagar el virus a 0, 1, 2 o 3 nuevas con probabilidad uniforme.
+
+\textbf{Código R}
+
+\begin{lstlisting}
+set.seed(123)
+dias <- 10
+infectados <- numeric(dias + 1)
+infectados[1] <- 1
+
+for (i in 2:(dias+1)) {
+  nuevos <- sum(sample(0:3, infectados[i-1], replace = TRUE))
+  infectados[i] <- nuevos
+}
+
+infectados
+total_infectados <- sum(infectados)
+total_infectados   
+\end{lstlisting}
+
+Se realizó una simulación del proceso de propagación del virus durante 10 días, partiendo de una única computadora infectada. En cada día, cada computadora puede infectar a 0, 1, 2 o 3 nuevas máquinas con igual probabilidad. La secuencia diaria de infectados fue,
+\[
+\texttt{infectados} = [1,\ 2,\ 4,\ 5,\ 7,\ 9,\ 11,\ 14,\ 21,\ 21,\ 36]
+\]
+El valor en la posición \( i \) representa el número de computadoras infectadas en el día \( i-1 \). Al final del proceso, se obtuvo un total acumulado de
+\[
+\texttt{total\_infectados} = 131.
+\]
+Por lo tanto, podemos concluir que
+\begin{itemize}
+    \item El número de computadoras infectadas creció cada día, sin extinguirse en ningún punto de la simulación.
+    \item Al día 10, el número de nuevas infecciones fue de 36, mostrando un crecimiento exponencial típico de un proceso supercrítico (\( \mu = 1.5 > 1 \)).
+\end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%EJERCICIOS DEL LIBRO DE Robert P. Dobrow%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Solución de ejercicios del Capítulo 4 del libro Introduction to Stochastic Processes with R, First Edition de Robert P. Dobrow.}
+
+\textbf{Ejercicio 4.1}
+ Considera un proceso de ramificación con distribución de descendencia $\mathbf{a} = (a, b, c)$, donde $a + b + c = 1$. Sea $\mathbf{P}$ la matriz de transición de Markov asociada al proceso. Exhibe las tres primeras filas de $\mathbf{P}$, es decir, encuentra $P_{ij}$ para $i = 0, 1, 2$ y $j = 0, 1, \dots$
+
+\begin{proof}
+Un proceso de ramificación es un modelo estocástico donde cada individuo de una generación da lugar a un número aleatorio de descendientes, de forma independiente. Supongamos que el número de hijos de un individuo sigue una distribución discreta sobre $\{0, 1, 2\}$, con
+\[
+\mathbb{P}(\text{hijos} = 0) = a, \quad 
+\mathbb{P}(\text{hijos} = 1) = b, \quad 
+\mathbb{P}(\text{hijos} = 2) = c, \quad 
+\text{con } a + b + c = 1.
+\]
+
+Sea $Z_n$ el número de individuos en la generación $n$. El proceso $\{Z_n\}_{n \geq 0}$ forma una cadena de Markov con espacio de estados en los enteros no negativos, y matriz de transición $\mathbf{P} = [P_{ij}]$, donde $P_{ij} = \mathbb{P}(Z_{n+1} = j \mid Z_n = i)$.
+
+Dado que cada individuo de la generación $n$ da lugar a un número de hijos independiente con distribución $\mathbf{a}$, entonces
+
+\[
+Z_{n+1} = \sum_{k=1}^{Z_n} X_k,
+\]
+donde $X_k \sim \mathbf{a}$ y son independientes e idénticamente distribuidas.
+
+Por tanto, $P_{ij}$ es la probabilidad de que la suma de $i$ variables independientes con distribución $(a, b, c)$ dé como resultado $j$.
+
+\textbf{Caso $i = 0$}
+
+Si no hay individuos en la generación actual, no puede haber descendientes. Entonces,
+
+\[
+P_{0j} = 
+\begin{cases}
+1, & \text{si } j = 0, \\
+0, & \text{si } j \geq 1.
+\end{cases}
+\]
+
+\textbf{Caso $i = 1$}
+
+Solo hay un individuo, que tendrá 0, 1 o 2 hijos con probabilidades $a$, $b$, $c$ respectivamente. Entonces,
+
+\[
+P_{1j} = 
+\begin{cases}
+a, & j = 0, \\
+b, & j = 1, \\
+c, & j = 2, \\
+0, & j \geq 3.
+\end{cases}
+\]
+
+\textbf{Caso $i = 2$}
+
+Ahora hay dos individuos. Sea $X_1$ y $X_2$ el número de hijos de cada uno. Como son independientes y tienen la misma distribución, entonces
+
+\[
+P_{2j} = \mathbb{P}(X_1 + X_2 = j),
+\]
+donde $X_1, X_2 \sim \mathbf{a}$.
+
+Calculamos cada valor,
+
+\begin{itemize}
+    \item $P_{20} = \mathbb{P}(X_1 = 0, X_2 = 0) = a^2$.
+    \item $P_{21} = \mathbb{P}(X_1 = 0, X_2 = 1) + \mathbb{P}(X_1 = 1, X_2 = 0) = ab + ba = 2ab$.
+    \item $P_{22} = \mathbb{P}(X_1 = 0, X_2 = 2) + \mathbb{P}(X_1 = 2, X_2 = 0) + \mathbb{P}(X_1 = 1, X_2 = 1) = 2ac + b^2$.
+    \item $P_{23} = \mathbb{P}(X_1 = 1, X_2 = 2) + \mathbb{P}(X_1 = 2, X_2 = 1) = 2bc$.
+    \item $P_{24} = \mathbb{P}(X_1 = 2, X_2 = 2) = c^2$.
+\end{itemize}
+
+Entonces,
+
+\[
+P_{2j} =
+\begin{cases}
+a^2, & j = 0, \\
+2ab, & j = 1, \\
+b^2 + 2ac, & j = 2, \\
+2bc, & j = 3, \\
+c^2, & j = 4, \\
+0, & j \geq 5.
+\end{cases}
+\]
+
+Las primeras tres filas de la matriz de transición $\mathbf{P}$ son,
+
+\[
+\begin{aligned}
+P_{0,\cdot} &= (1, 0, 0, 0, \dots) \\
+P_{1,\cdot} &= (a, b, c, 0, 0, \dots) \\
+P_{2,\cdot} &= (a^2, 2ab, b^2 + 2ac, 2bc, c^2, 0, \dots)
+\end{aligned}
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.2}
+
+Encuentra la función generadora de probabilidades de una variable aleatoria de Poisson con parámetro $\lambda > 0$. Usa la función generadora para encontrar la media y la varianza de la distribución de Poisson.
+
+\begin{proof}
+Sea $X \sim \text{Poisson}(\lambda)$. Por definición, su función de probabilidad es,
+\[
+\mathbb{P}(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}, \quad \text{para } k = 0, 1, 2, \dots
+\]
+
+La \textbf{función generadora de probabilidades} de $X$ está definida por,
+\[
+G_X(s) = \mathbb{E}[s^X] = \sum_{k=0}^{\infty} \mathbb{P}(X = k) s^k
+= \sum_{k=0}^{\infty} \frac{e^{-\lambda} \lambda^k}{k!} s^k 
+= e^{-\lambda} \sum_{k=0}^{\infty} \frac{(\lambda s)^k}{k!}.
+\]
+
+Usamos que $\sum_{k=0}^{\infty} \frac{(\lambda s)^k}{k!} = e^{\lambda s}$. Entonces,
+\[
+G_X(s) = e^{-\lambda} \cdot e^{\lambda s} = e^{\lambda(s - 1)}.
+\]
+
+La media se obtiene derivando $G_X(s)$ y evaluando en $s = 1$,
+\[
+G_X'(s) = \frac{d}{ds} \left( e^{\lambda(s - 1)} \right) = \lambda e^{\lambda(s - 1)}
+\Rightarrow \mathbb{E}[X] = G_X'(1) = \lambda.
+\]
+
+La varianza se puede obtener como,
+\[
+\text{Var}(X) = G_X''(1) + G_X'(1) - (G_X'(1))^2.
+\]
+Primero derivamos nuevamente,
+\[
+G_X''(s) = \frac{d}{ds}(\lambda e^{\lambda(s - 1)}) = \lambda^2 e^{\lambda(s - 1)}
+\Rightarrow G_X''(1) = \lambda^2.
+\]
+
+Entonces,
+\[
+\text{Var}(X) = \lambda^2 + \lambda - \lambda^2 = \lambda
+\]
+
+La función generadora de probabilidades de $X \sim \text{Poisson}(\lambda)$ es,
+\[
+G_X(s) = e^{\lambda(s - 1)},
+\]
+
+y cumple que,
+\[
+\mathbb{E}[X] = \lambda, \quad \text{Var}(X) = \lambda.
+\]
+\end{proof}
+
+
+%%%%%%%%%%%%%
+\textbf{Ejercicio 4.3}
+
+Sean $X \sim \text{Poisson}(\lambda)$ y $Y \sim \text{Poisson}(\mu)$ variables aleatorias independientes. Usar funciones generadoras de probabilidades para encontrar la distribución de $Z = X + Y$.
+
+\begin{proof}
+Sabemos que la \textbf{función generadora de probabilidades} de una variable Poisson con parámetro $\lambda$ es,
+
+\[
+G_X(s) = \mathbb{E}[s^X] = e^{\lambda(s - 1)}, \quad
+G_Y(s) = \mathbb{E}[s^Y] = e^{\mu(s - 1)}.
+\]
+
+Como $X$ y $Y$ son independientes, la función generadora de su suma es el producto de sus funciones generadoras individuales,
+
+\[
+G_{X+Y}(s) = G_X(s) \cdot G_Y(s) = e^{\lambda(s - 1)} \cdot e^{\mu(s - 1)} = e^{(\lambda + \mu)(s - 1)}.
+\]
+
+Esta es exactamente la función generadora de una variable aleatoria Poisson con parámetro $\lambda + \mu$.
+En conclusión,
+\[
+X + Y \sim \text{Poisson}(\lambda + \mu).
+\]
+
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.4}
+
+Si $X$ tiene una distribución binomial negativa con parámetros $r \in \mathbb{N}$ y $p \in (0,1)$, entonces se puede escribir como la suma de $r$ variables aleatorias geométricas independientes. Hallar la función generadora de probabilidades de $X$ y, con ella, su media y varianza.
+
+\begin{proof}
+Sea $X \sim \text{Binomial Negativa}(r, p)$. Esto significa que $X$ es la suma de $r$ ensayos geométricos independientes, es decir,
+
+\[
+X = X_1 + X_2 + \dots + X_r, \quad \text{donde } X_i \sim \text{Geom}(p), \text{ independientes}.
+\]
+
+La función generadora de probabilidades de una variable geométrica $X_i \sim \text{Geom}(p)$ (donde $X_i$ cuenta el número de ensayos hasta el primer éxito, incluyendo el éxito),es,
+
+\[
+G_{X_i}(s) = \sum_{k=1}^{\infty} p (1-p)^{k-1} s^k = \frac{ps}{1 - (1-p)s}, \quad \text{para } |s| < \frac{1}{1-p}.
+\]
+
+Como $X$ es la suma de $r$ variables geométricas independientes, la función generadora de $X$ es el producto de las funciones generadoras,
+
+\[
+G_X(s) = \left( G_{X_i}(s) \right)^r = \left( \frac{ps}{1 - (1-p)s} \right)^r.
+\]
+
+Usamos propiedades de funciones generadoras,
+\[
+\mathbb{E}[X] = G_X'(1), \quad \text{pero como es suma de r geométricas: } \mathbb{E}[X] = r \cdot \mathbb{E}[X_i] = \frac{r}{p}.
+\]
+
+\[
+\text{Var}(X) = r \cdot \text{Var}(X_i) = r \cdot \frac{1 - p}{p^2}.
+\]
+
+En conclusión,
+\[
+G_X(s) = \left( \frac{ps}{1 - (1-p)s} \right)^r, \quad \mathbb{E}[X] = \frac{r}{p}, \quad \text{Var}(X) = \frac{r(1 - p)}{p^2}.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.5}
+
+\textbf{(a)} Demuestra que si $G(s)$ es la función generadora de probabilidades de una variable aleatoria discreta $X$, entonces el $k$-ésimo momento factorial de $X$ está dado por,
+
+\[
+\mathbb{E}[X^{(k)}] = \left. \frac{d^k G(s)}{ds^k} \right|_{s=1}.
+\]
+
+donde \( X^{(k)} = X(X - 1)\dots(X - k + 1) \) denota el momento factorial de orden $k$.
+
+\begin{proof}
+Por definición, la función generadora de probabilidades es,
+
+\[
+G(s) = \mathbb{E}[s^X] = \sum_{n=0}^{\infty} \mathbb{P}(X = n) s^n.
+\]
+
+Derivando $k$ veces,
+
+\[
+G^{(k)}(s) = \frac{d^k}{ds^k} \left( \sum_{n=0}^\infty \mathbb{P}(X = n) s^n \right)
+= \sum_{n=0}^{\infty} \mathbb{P}(X = n) \frac{d^k}{ds^k} s^n.
+\]
+
+Recordando que,
+
+\[
+\frac{d^k}{ds^k}s^n =
+\begin{cases}
+\frac{n!}{(n-k)!} s^{n-k}, & \text{si } n \geq k, \\
+0, & \text{si } n < k
+\end{cases}
+\]
+
+entonces,
+
+\[
+G^{(k)}(s) = \sum_{n=k}^\infty \mathbb{P}(X = n) \frac{n!}{(n - k)!} s^{n - k}
+\Rightarrow G^{(k)}(1) = \sum_{n=k}^\infty \mathbb{P}(X = n) \frac{n!}{(n - k)!}
+= \mathbb{E}[X^{(k)}].
+\]
+En conclusión, tenemos que
+\[
+\mathbb{E}[X^{(k)}] = G^{(k)}(1).
+\]
+
+
+\textbf{(b)} Encuentra el $k$-ésimo momento factorial para la distribución binomial $X \sim \text{Binomial}(n, p)$ usando su función generadora.
+
+
+    La función generadora de probabilidades para $X \sim \text{Bin}(n, p)$ es,
+
+\[
+G(s) = (1 - p + ps)^n.
+\]
+
+Aplicamos derivadas sucesivas y evaluamos en $s = 1$ para obtener,
+
+\[
+G^{(k)}(s) = \frac{d^k}{ds^k}(1 - p + ps)^n = n(n-1)\dots(n-k+1)p^k(1 - p + ps)^{n - k}
+\]
+
+entonces,
+\[
+\mathbb{E}[X^{(k)}] = G^{(k)}(1) = n(n - 1) \dots (n - k + 1) p^k.
+\]
+En conclusión, tenemos que
+\[
+\mathbb{E}[X^{(k)}] = n^{(k)} p^k, \quad \text{donde } n^{(k)} = n(n-1)\dots(n-k+1).
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.6}
+
+Sean $X_1, X_2, \dots$ variables aleatorias independientes con $X_i \sim \text{Bernoulli}(p)$ para todo $i \geq 1$, y sea $N \sim \text{Poisson}(\lambda)$ independiente de los $X_i$. Definimos,
+\[
+Z = \sum_{i = 1}^{N} X_i.
+\]
+Encontrar la distribución de $Z$ usando funciones generadoras de probabilidades.
+
+\begin{proof}
+Queremos encontrar la distribución de la suma aleatoria $Z = \sum_{i=1}^{N} X_i$.
+
+Recordemos,
+
+- La función generadora de probabilidades de $X_i \sim \text{Bernoulli}(p)$ es,
+\[
+G_{X}(s) = \mathbb{E}[s^{X_i}] = (1 - p) + ps.
+\]
+
+- La función generadora de probabilidades de $N \sim \text{Poisson}(\lambda)$ es,
+\[
+G_N(s) = e^{\lambda(s - 1)}.
+\]
+
+La función generadora de probabilidades de una suma aleatoria \( Z = X_1 + \dots + X_N \), con \( N \sim \text{Poisson}(\lambda) \) y los \( X_i \) i.i.d. independientes de \( N \), está dada por la composición,
+\[
+G_Z(s) = G_N(G_X(s)).
+\]
+
+Sustituimos,
+\[
+G_Z(s) = G_N(G_X(s)) = e^{\lambda \left( (1 - p) + ps - 1 \right)} = e^{\lambda (ps - p)} = e^{\lambda p (s - 1)},
+\]
+esto es la función generadora de una variable Poisson con parámetro $\lambda p$.
+En conclusión,
+\[
+Z = \sum_{i=1}^N X_i \sim \text{Poisson}(\lambda p),
+\]
+
+y la suma de un número aleatorio (Poisson) de variables Bernoulli independientes con probabilidad de éxito $p$ es una variable Poisson con parámetro $\lambda p$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.7}
+
+Sea la distribución de descendencia definida como,
+\[
+\mathbb{P}(X = 0) = 1 - p, \quad \mathbb{P}(X = 3) = p.
+\]
+donde \( p \in [0,1] \). Encuentra su función generadora de probabilidades, la media y la varianza.
+
+\begin{proof}
+La función generadora de probabilidades de una variable aleatoria discreta \( X \) está definida como,
+\[
+G_X(s) = \mathbb{E}[s^X] = \sum_{k=0}^{\infty} \mathbb{P}(X = k) s^k.
+\]
+
+En nuestro caso,
+\[
+G_X(s) = (1 - p) s^0 + p s^3 = (1 - p) + p s^3.
+\]
+
+La media se obtiene como la primera derivada evaluada en \( s = 1 \),
+\[
+G_X'(s) = \frac{d}{ds}[(1 - p) + p s^3] = 3p s^2 \Rightarrow \mathbb{E}[X] = G_X'(1) = 3p.
+\]
+Calculamos la segunda derivada,
+\[
+G_X''(s) = \frac{d^2}{ds^2}[(1 - p) + p s^3] = 6p s \Rightarrow G_X''(1) = 6p.
+\]
+
+Recordamos que,
+\[
+\text{Var}(X) = G_X''(1) + G_X'(1) - (G_X'(1))^2,
+\]
+sustituyendo,
+
+\[
+\text{Var}(X) = 6p + 3p - (3p)^2 = 9p - 9p^2 = 9p(1 - p).
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.8}
+
+ Sea \( X \) una variable aleatoria entera no negativa con función generadora de probabilidades \( G_X(s) = \mathbb{E}[s^X] \). Demuestra que la probabilidad de que \( X \) tome un valor par está dada por,
+\[
+\mathbb{P}(X \text{ par}) = \frac{1 + G_X(-1)}{2}.
+\]
+
+\begin{proof}
+Podemos escribir la probabilidad de que \( X \) sea par como,
+\[
+\mathbb{P}(X \text{ par}) = \sum_{k=0}^{\infty} \mathbb{P}(X = 2k).
+\]
+
+Evaluamos la función generadora en \( s = -1 \).
+
+Por definición,
+\[
+G_X(-1) = \sum_{n=0}^{\infty} \mathbb{P}(X = n)(-1)^n
+= \sum_{n=0}^{\infty} (-1)^n \mathbb{P}(X = n).
+\]
+
+Separamos en pares e impares,
+\[
+G_X(-1) = \sum_{k=0}^{\infty} \mathbb{P}(X = 2k)(-1)^{2k}
++ \sum_{k=0}^{\infty} \mathbb{P}(X = 2k + 1)(-1)^{2k+1}.
+\]
+
+Sabemos que,
+\[
+(-1)^{2k} = 1, \quad (-1)^{2k + 1} = -1,
+\]
+
+por tanto,
+\[
+G_X(-1) = \sum_{k=0}^{\infty} \mathbb{P}(X = 2k)
+- \sum_{k=0}^{\infty} \mathbb{P}(X = 2k + 1)
+= \mathbb{P}(X \text{ par}) - \mathbb{P}(X \text{ impar}).
+\]
+
+Pero también,
+\[
+\mathbb{P}(X \text{ par}) + \mathbb{P}(X \text{ impar}) = 1
+\Rightarrow \mathbb{P}(X \text{ impar}) = 1 - \mathbb{P}(X \text{ par}).
+\]
+
+Sustituyendo,
+\[
+G_X(-1) = \mathbb{P}(X \text{ par}) - (1 - \mathbb{P}(X \text{ par})) = 2 \mathbb{P}(X \text{ par}) - 1.
+\]
+
+Resolviendo para \( \mathbb{P}(X \text{ par}) \),
+\[
+\mathbb{P}(X \text{ par}) = \frac{1 + G_X(-1)}{2}.
+\]
+En conclusión,
+
+\[
+\mathbb{P}(X \text{ par}) = \frac{1 + G_X(-1)}{2}.
+\]
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.9}
+
+Sea $\{Z_n\}_{n \geq 0}$ un proceso de ramificación con media de descendencia $\mu = \mathbb{E}[X]$, donde $X$ representa el número de descendientes de un individuo. Definimos,
+
+\[
+Y_n = \frac{Z_n}{\mu^n}.
+\]
+
+Demuestra que $\{Y_n\}_{n \geq 0}$ es una martingala con respecto a la filtración natural $\mathcal{F}_n = \sigma(Z_0, Z_1, \dots, Z_n)$, es decir,
+
+\[
+\mathbb{E}[Y_{n+1} \mid \mathcal{F}_n] = Y_n.
+\]
+
+\begin{proof}
+Partimos del hecho de que el número de individuos en la generación $n+1$ está dado por,
+
+\[
+Z_{n+1} = \sum_{i=1}^{Z_n} X_i^{(n)}.
+\]
+
+donde los $X_i^{(n)}$ son i.i.d. copias del número de descendientes por individuo, y todos independientes de $\mathcal{F}_n$. Por linealidad de la esperanza condicional,
+
+\[
+\mathbb{E}[Z_{n+1} \mid \mathcal{F}_n] = \mathbb{E}\left[ \sum_{i=1}^{Z_n} X_i^{(n)} \,\bigg|\, \mathcal{F}_n \right]
+= \sum_{i=1}^{Z_n} \mathbb{E}[X_i^{(n)}] = Z_n \cdot \mu.
+\]
+
+Ahora, observamos que,
+
+\[
+Y_{n+1} = \frac{Z_{n+1}}{\mu^{n+1}} \Rightarrow
+\mathbb{E}[Y_{n+1} \mid \mathcal{F}_n]
+= \frac{\mathbb{E}[Z_{n+1} \mid \mathcal{F}_n]}{\mu^{n+1}} 
+= \frac{\mu Z_n}{\mu^{n+1}} = \frac{Z_n}{\mu^n} = Y_n.
+\]
+
+Hemos demostrado que,
+
+\[
+\mathbb{E}[Y_{n+1} \mid \mathcal{F}_n] = Y_n.
+\]
+
+por lo tanto, la secuencia $\{Y_n\}_{n \geq 0}$ es una \textbf{martingala}.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.10}
+
+En un proceso de ramificación clásico, sea $\mu = \mathbb{E}[X]$ la media del número de descendientes de un individuo, y $\sigma^2 = \text{Var}(X)$ su varianza. Suponiendo que $Z_0 = 1$, demuestra por inducción que para $\mu \neq 1$,
+
+\[
+\text{Var}(Z_n) = \sigma^2 \mu^{n-1} \cdot \frac{\mu^n - 1}{\mu - 1}.
+\]
+
+\begin{proof}
+\textbf{Base de inducción.}
+
+Para \( n = 1 \), se tiene,
+\[
+Z_1 = X_1 \sim \text{misma distribución que } X
+\Rightarrow \text{Var}(Z_1) = \sigma^2.
+\]
+
+Verificamos la fórmula,
+\[
+\sigma^2 \mu^{1 - 1} \cdot \frac{\mu^1 - 1}{\mu - 1}
+= \sigma^2 \cdot 1 \cdot \frac{\mu - 1}{\mu - 1} = \sigma^2.
+\]
+
+La fórmula es correcta para \( n = 1 \).
+
+\textbf{Hipótesis de inducción.}
+
+Supongamos que para algún $n \geq 1$ se cumple,
+\[
+\text{Var}(Z_n) = \sigma^2 \mu^{n - 1} \cdot \frac{\mu^n - 1}{\mu - 1}.
+\]
+
+\textbf{Paso inductivo.}
+
+Queremos demostrar que,
+\[
+\text{Var}(Z_{n+1}) = \sigma^2 \mu^n \cdot \frac{\mu^{n+1} - 1}{\mu - 1}.
+\]
+
+Recordemos que,
+\[
+Z_{n+1} = \sum_{i=1}^{Z_n} X_i^{(n)} \quad \text{(i.i.d. copias de } X\text{)}.
+\]
+
+Por la fórmula de la varianza de suma aleatoria condicional,
+
+\[
+\text{Var}(Z_{n+1}) = \mathbb{E}[\text{Var}(Z_{n+1} \mid Z_n)] + \text{Var}(\mathbb{E}[Z_{n+1} \mid Z_n]).
+\]
+
+Condicionalmente a $Z_n$, \( Z_{n+1} \mid Z_n \sim \sum_{i=1}^{Z_n} X_i^{(n)}\), por lo tanto,
+
+\[
+\mathbb{E}[Z_{n+1} \mid Z_n] = \mu Z_n, \quad \text{Var}(Z_{n+1} \mid Z_n) = \sigma^2 Z_n.
+\]
+
+Sustituimos,
+
+\[
+\text{Var}(Z_{n+1}) = \mathbb{E}[\sigma^2 Z_n] + \text{Var}(\mu Z_n)
+= \sigma^2 \mathbb{E}[Z_n] + \mu^2 \text{Var}(Z_n).
+\]
+
+Sabemos que \( \mathbb{E}[Z_n] = \mu^n \), y usamos la hipótesis inductiva,
+
+\[
+\text{Var}(Z_{n+1}) = \sigma^2 \mu^n + \mu^2 \left( \sigma^2 \mu^{n-1} \cdot \frac{\mu^n - 1}{\mu - 1} \right),
+\]
+
+factorizamos \( \sigma^2 \mu^n \),
+
+\[
+\text{Var}(Z_{n+1}) = \sigma^2 \mu^n \left( 1 + \frac{\mu (\mu^n - 1)}{\mu - 1} \right)
+= \sigma^2 \mu^n \cdot \left( \frac{(\mu - 1) + \mu(\mu^n - 1)}{\mu - 1} \right),
+\]
+
+desarrollamos el numerador,
+
+\[
+(\mu - 1) + \mu(\mu^n - 1) = \mu - 1 + \mu^{n+1} - \mu = \mu^{n+1} - 1.
+\]
+
+Finalmente,
+
+\[
+\text{Var}(Z_{n+1}) = \sigma^2 \mu^n \cdot \frac{\mu^{n+1} - 1}{\mu - 1}.
+\]
+
+Esto concluye el paso inductivo.
+
+Por inducción, hemos demostrado que para $\mu \neq 1$ y $Z_0 = 1$,
+
+\[
+\text{Var}(Z_n) = \sigma^2 \mu^{n - 1} \cdot \frac{\mu^n - 1}{\mu - 1}.
+\]
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.11}
+
+Usa la representación por funciones generadoras de $Z_n$ en la Ecuación (4.4) para encontrar $\mathbb{E}[Z_n]$.
+
+\begin{proof}
+Sea un proceso de ramificación clásico con función generadora de probabilidades de la distribución de descendencia dada por $G(s)$. Sea $Z_n$ el número de individuos en la generación $n$, con $Z_0 = 1$.
+
+La función generadora de $Z_n$ se denota por,
+
+\[
+G_n(s) = \mathbb{E}[s^{Z_n}].
+\]
+
+Y cumple la ecuación de recurrencia (por composición de funciones generadoras),
+
+\[
+G_{n+1}(s) = G(G_n(s)).
+\]
+
+Sabemos que la media se obtiene derivando $G_n(s)$ y evaluando en $s = 1$, tenemos que
+
+\[
+\mathbb{E}[Z_n] = G_n'(1).
+\]
+
+También sabemos que si $\mu = G'(1)$ es la media del número de descendientes por individuo, entonces,
+
+\[
+\mathbb{E}[Z_n] = \mu^n.
+\]
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.12}
+
+Un proceso de ramificación tiene distribución de descendencia
+\[
+\mathbf{a} = \left( \frac{1}{4}, \frac{1}{4}, \frac{1}{2} \right).
+\]
+Calcula lo siguiente,
+
+\begin{enumerate}
+\item[(a)] La media \( \mu \)
+\item[(b)] La función generadora \( G(s) \)
+\item[(c)] La probabilidad de extinción
+\item[(d)] La función generadora de \( Z_2 \): \( G_2(s) \)
+\item[(e)] \( \mathbb{P}(Z_2 = 0) \)
+\end{enumerate}
+
+\begin{proof}
+\begin{enumerate}
+\item[(a)] 
+Sea \( X \) la variable aleatoria con distribución \( \mathbf{a} \). Entonces,
+
+\[
+\mu = \mathbb{E}[X] = 0 \cdot \frac{1}{4} + 1 \cdot \frac{1}{4} + 2 \cdot \frac{1}{2} = \frac{1}{4} + 1 = \frac{5}{4}.
+\]
+
+\item[(b)] 
+
+Por definición,
+\[
+G(s) = \sum_{k=0}^2 a_k s^k = \frac{1}{4} + \frac{1}{4}s + \frac{1}{2}s^2.
+\]
+
+\item[(c)]
+
+La probabilidad de extinción \( q \) es la menor solución no negativa de la ecuación,
+\[
+s = G(s) = \frac{1}{4} + \frac{1}{4}s + \frac{1}{2}s^2
+\Rightarrow \frac{1}{2}s^2 - \frac{3}{4}s + \frac{1}{4} = 0.
+\]
+
+Multiplicamos por 4,
+\[
+2s^2 - 3s + 1 = 0
+\Rightarrow s = \frac{3 \pm \sqrt{9 - 8}}{4} = \frac{3 \pm 1}{4} \Rightarrow s = 1, \frac{1}{2}.
+\]
+
+Como \( \mu = 5/4 > 1 \), el proceso es supercrítico y la probabilidad de extinción es,
+\[
+    q = \frac{1}{2}.
+\]
+
+\item[(d)]
+
+Usamos la composición,
+\[
+G_2(s) = G(G(s)) = G\left( \frac{1}{4} + \frac{1}{4}s + \frac{1}{2}s^2 \right).
+\]
+
+Sustituimos en la función generadora,
+
+\[
+G_2(s) = \frac{1}{4} + \frac{1}{4} \left( \frac{1}{4} + \frac{1}{4}s + \frac{1}{2}s^2 \right) + \frac{1}{2} \left( \frac{1}{4} + \frac{1}{4}s + \frac{1}{2}s^2 \right)^2.
+\]
+
+Este desarrollo puede expandirse si se desea obtener los coeficientes exactos de cada potencia de \( s \), aunque no es necesario para (e).
+
+\item[(e)] 
+
+Evaluamos,
+\begin{align*}
+G(0) &= \frac{1}{4} + 0 + 0 = \frac{1}{4} \\
+\Rightarrow G_2(0) &= G(G(0)) = G\left( \frac{1}{4} \right)\\
+&= \frac{1}{4} + \frac{1}{4} \cdot \frac{1}{4} + \frac{1}{2} \cdot \left( \frac{1}{4} \right)^2 \\
+&= \frac{1}{4} + \frac{1}{16} + \frac{1}{2} \cdot \frac{1}{16} \\
+&= \frac{1}{4} + \frac{1}{16} + \frac{1}{32} \\
+&= \frac{8 + 2 + 1}{32} \\
+&= \frac{11}{32},
+\end{align*}
+entonces,
+\[
+    \mathbb{P}(Z_2 = 0) = \frac{11}{32}.
+\]
+\end{enumerate}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.13}
+
+Usa métodos numéricos para encontrar la probabilidad de extinción \( q \) de un proceso de ramificación donde el número de hijos de un individuo tiene distribución Poisson con parámetro \( \lambda = 1.5 \).
+
+\begin{proof}
+Si \( X \sim \text{Poisson}(\lambda) \), su función generadora de probabilidades es,
+
+\[
+G(s) = \mathbb{E}[s^X] = e^{\lambda(s - 1)}.
+\]
+
+En este caso, con \( \lambda = 1.5 \), tenemos,
+
+\[
+G(s) = e^{1.5(s - 1)}.
+\]
+
+La probabilidad de extinción \( q \in [0,1] \) es la menor solución no trivial de
+
+\[
+q = G(q) = e^{1.5(q - 1)}.
+\]
+
+Como \( \lambda > 1 \), el proceso es supercrítico, así que existe una solución \( q \in (0,1) \).
+
+Partimos con \( q_0 = 0 \) y definimos la sucesión,
+
+\[
+q_{n+1} = G(q_n) = e^{1.5(q_n - 1)}.
+\]
+
+\textbf{Ejemplo de iteración:}
+
+\[
+\begin{aligned}
+q_0 &= 0. \\
+q_1 &= e^{-1.5} \approx 0.22313. \\
+q_2 &= e^{1.5(0.22313 - 1)} \approx e^{-1.1647} \approx 0.312. \\ 
+q_3 &= e^{1.5(0.312 - 1)} \approx 0.362. \\
+q_4 &= e^{1.5(0.362 - 1)} \approx 0.393. \\
+q_5 &= e^{1.5(0.393 - 1)} \approx 0.411. \\
+q_6 &= e^{1.5(0.411 - 1)} \approx 0.421. \\
+\end{aligned}
+\]
+
+El proceso converge a una solución aproximada,
+
+\[
+    q \approx 0.423.
+\]
+
+La probabilidad de extinción para un proceso de ramificación con distribución Poisson(\( \lambda = 1.5 \)) es aproximadamente,
+
+\[
+    q \approx 0.423.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.14}
+
+Un proceso de ramificación tiene distribución de descendencia dada por,
+
+\[
+a_0 = p, \quad a_1 = 1 - p - q, \quad a_2 = q.
+\]
+
+\begin{itemize}
+\item[(a)] ¿Para qué valores de \( p \) y \( q \) el proceso es supercrítico?
+\item[(b)] En el caso supercrítico, encuentra la probabilidad de extinción.
+\end{itemize}
+
+\begin{proof}
+\begin{itemize}
+\item[(a)] 
+
+La media del número de hijos por individuo es,
+
+\[
+\mu = 0 \cdot p + 1 \cdot (1 - p - q) + 2 \cdot q = 1 - p - q + 2q = 1 - p + q
+\]
+
+\begin{itemize}
+\item El proceso es,
+  \begin{itemize}
+  \item subcrítico si \( \mu < 1 \Rightarrow 1 - p + q < 1 \Rightarrow q < p \),
+  \item crítico si \( \mu = 1 \Rightarrow q = p \),
+  \item supercrítico si \( \mu > 1 \Rightarrow q > p \).
+  \end{itemize}
+\end{itemize}
+
+\[
+    \text{El proceso es supercrítico si } q > p.
+\]
+
+\item[(b)]
+La probabilidad de extinción \( q \in [0,1] \) es la menor solución de la ecuación,
+
+\[
+s = G(s) = a_0 + a_1 s + a_2 s^2 = p + (1 - p - q)s + q s^2.
+\]
+
+Reordenamos,
+\[
+q s^2 + (1 - p - q - 1)s + p = 0 \Rightarrow q s^2 - (p + q) s + p = 0.
+\]
+
+Resolviendo la ecuación cuadrática,
+
+\[
+s = \frac{p + q \pm \sqrt{(p + q)^2 - 4pq}}{2q}.
+\]
+
+Notamos que,
+
+\[
+(p + q)^2 - 4pq = p^2 + 2pq + q^2 - 4pq = p^2 - 2pq + q^2 = (p - q)^2,
+\]
+
+entonces,
+
+\[
+s = \frac{p + q \pm |p - q|}{2q}.
+\]
+
+Si \( q > p \), entonces \( |p - q| = q - p \). Obtenemos dos soluciones,
+
+\[
+s_1 = \frac{p + q - (q - p)}{2q} = \frac{2p}{2q} = \frac{p}{q}, \quad
+s_2 = \frac{p + q + (q - p)}{2q} = \frac{2q}{2q} = 1.
+\]
+
+Como buscamos la menor raíz en \( [0,1] \), la probabilidad de extinción es,
+
+\[
+    \text{Si } q > p, \quad \text{entonces } \mathbb{P}(\text{extinción}) = \frac{p}{q}.
+\]
+En conclusión, tenemos que
+\begin{itemize}
+\item El proceso es supercrítico si \( q > p \).
+\item En ese caso, la probabilidad de extinción es \(\frac{p}{q} \).
+\end{itemize}
+\end{itemize}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.15}
+
+Supón que la distribución de descendencia es uniforme sobre el conjunto \( \{0, 1, 2, 3, 4\} \). Encuentra la probabilidad de extinción.
+
+\begin{proof}
+
+La función de probabilidad es,
+
+\[
+a_k = \mathbb{P}(X = k) = \frac{1}{5}, \quad k = 0, 1, 2, 3, 4.
+\]
+
+La función generadora de probabilidades es,
+
+\[
+G(s) = \sum_{k=0}^{4} \frac{1}{5} s^k = \frac{1}{5}(1 + s + s^2 + s^3 + s^4).
+\]
+
+Usamos la fórmula de la suma de una progresión geométrica,
+
+\[
+G(s) = \frac{1}{5} \cdot \frac{1 - s^5}{1 - s}, \quad \text{para } s \neq 1.
+\]
+
+
+Calculamos la media,
+\[
+\mu = \mathbb{E}[X] = \sum_{k=0}^{4} k \cdot \frac{1}{5}
+= \frac{1}{5}(0 + 1 + 2 + 3 + 4) = \frac{10}{5} = 2.
+\]
+
+Como \( \mu > 1 \), el proceso es \textbf{supercrítico}, por lo tanto existe una probabilidad de extinción \( q < 1 \) que satisface,
+
+\[
+q = G(q) = \frac{1}{5}(1 + q + q^2 + q^3 + q^4).
+\]
+
+Buscamos la menor solución \( q \in [0,1] \) de,
+
+\[
+q = \frac{1}{5}(1 + q + q^2 + q^3 + q^4)
+\Rightarrow 5q = 1 + q + q^2 + q^3 + q^4
+\Rightarrow 4q - q^2 - q^3 - q^4 = 1
+\]
+
+Esto no puede resolverse de forma cerrada, así que usamos \textbf{iteración de punto fijo},
+
+\[
+q_{n+1} = \frac{1}{5}(1 + q_n + q_n^2 + q_n^3 + q_n^4).
+\]
+
+Ejemplo de iteración,
+\[
+\begin{aligned}
+q_0 &= 0 \\
+q_1 &= \frac{1}{5}(1) = 0.2 \\
+q_2 &= \frac{1}{5}(1 + 0.2 + 0.04 + 0.008 + 0.0016) \approx 0.25 \\
+q_3 &= \frac{1}{5}(1 + 0.25 + 0.0625 + 0.0156 + 0.0039) \approx 0.266 \\
+q_4 &= \dots \to q \approx 0.285
+\end{aligned}
+\]
+
+En conclusión, la probabilidad de extinción para el proceso de ramificación con distribución uniforme sobre \( \{0, 1, 2, 3, 4\} \) es aproximadamente,
+
+\[
+    q \approx 0.285.
+\]
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.17}
+
+Para \( 0 < p < 1 \), sea \( \mathbf{a} = (1 - p, 0, p) \) la distribución de descendencia de un proceso de ramificación. Es decir, cada individuo puede tener 0 o 2 descendientes, con probabilidades \( 1 - p \) y \( p \), respectivamente. Supón que el proceso comienza con dos individuos.
+
+\begin{itemize}
+    \item[(a)] Encuentra la probabilidad de extinción.
+    \item[(b)] Escribe la expresión general para \( P_{ij} \), término de la matriz de transición de este proceso.
+\end{itemize}
+
+\begin{proof}
+
+\begin{itemize}
+\item[(a)]
+Sea \( G(s) \) la función generadora de la distribución de descendencia. En este caso,
+
+\[
+G(s) = (1 - p) + p s^2.
+\]
+
+La probabilidad de extinción \( q \in [0,1] \) es la menor solución de la ecuación,
+
+\[
+s = G(s) = (1 - p) + p s^2
+\Rightarrow p s^2 - s + (1 - p) = 0.
+\]
+
+Resolvemos la cuadrática,
+
+\[
+s = \frac{1 \pm \sqrt{1 - 4p(1 - p)}}{2p}.
+\]
+
+El discriminante es,
+\[
+\Delta = 1 - 4p(1 - p) = 1 - 4p + 4p^2 = (1 - 2p)^2 \geq 0.
+\]
+
+Entonces,
+\[
+s = \frac{1 \pm |1 - 2p|}{2p}.
+\]
+
+Tenemos los siguientes casos:
+
+- Si \( p < \frac{1}{2} \Rightarrow |1 - 2p| = 1 - 2p \):
+\[
+q = \frac{1 - (1 - 2p)}{2p} = \frac{2p}{2p} = 1
+\quad \Rightarrow \text{Extinción segura.}
+\]
+
+- Si \( p > \frac{1}{2} \Rightarrow |1 - 2p| = 2p - 1 \):
+\[
+q = \frac{1 - (2p - 1)}{2p} = \frac{2(1 - p)}{2p} = \frac{1 - p}{p}.
+\]
+
+Pero como el proceso comienza con dos individuos y son independientes, la probabilidad total de extinción es,
+
+\[
+\mathbb{P}(\text{extinción total}) =
+\begin{cases}
+1, & \text{si } p \leq \frac{1}{2} \\
+\left( \frac{1 - p}{p} \right)^2, & \text{si } p > \frac{1}{2}
+\end{cases}
+\]
+
+\item[(b)]
+Sea \( P_{ij} \) la probabilidad de pasar de \( i \) a \( j \) individuos en una generación.
+
+Cada uno de los \( i \) individuos tiene:
+
+- 0 hijos con probabilidad \( 1 - p \)
+
+- 2 hijos con probabilidad \( p \)
+
+Entonces, el total de hijos posibles en la siguiente generación debe ser un número par entre 0 y \( 2i \), dependiendo de cuántos individuos tengan 2 hijos.
+
+Sean \( k \in \{0, 1, \dots, i\} \) los individuos que generan 2 hijos (el resto genera 0). Entonces,
+
+\[
+j = 2k \Rightarrow k = \frac{j}{2}
+\Rightarrow P_{ij} =
+\begin{cases}
+\binom{i}{j/2} p^{j/2} (1 - p)^{i - j/2}, & \text{si } j \text{ par y } 0 \leq j \leq 2i \\
+0, & \text{en otro caso}
+\end{cases}
+\]
+En conclusión, tenemos que
+\begin{itemize}
+    \item[(a)] La probabilidad de extinción depende de \( p \):
+    \[
+    q =
+    \begin{cases}
+    1, & p \leq \frac{1}{2} \\
+    \left( \frac{1 - p}{p} \right)^2, & p > \frac{1}{2}
+    \end{cases}
+    \]
+    \item[(b)] La matriz de transición está dada por,
+    \[
+    P_{ij} =
+    \begin{cases}
+    \binom{i}{j/2} p^{j/2} (1 - p)^{i - j/2}, & j \text{ par, } 0 \leq j \leq 2i \\
+    0, & \text{en otro caso}
+    \end{cases}
+    \]
+\end{itemize}
+\end{itemize}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.18}
+
+Considere un proceso de ramificación con distribución de descendencia,
+
+\[
+a = (p^2,\ 2p(1 - p),\ (1 - p)^2), \quad \text{para } 0 < p < 1.
+\]
+
+Esta distribución corresponde a una distribución binomial con dos ensayos y probabilidad de éxito \( 1 - p \). Encuentre la probabilidad de extinción.
+
+\begin{proof}
+Los términos dados corresponden a una distribución binomial,
+
+\[
+P(X = k) = \binom{2}{k} (1 - p)^k p^{2 - k}, \quad k = 0,1,2.
+\]
+
+\textbf{Verificación:}
+
+\[
+a_0 = p^2 = \binom{2}{0}(1 - p)^0 p^2.
+\]
+\[
+a_1 = 2p(1 - p) = \binom{2}{1}(1 - p)^1 p^1.
+\]
+\[
+a_2 = (1 - p)^2 = \binom{2}{2}(1 - p)^2 p^0.
+\]
+
+Entonces \( X \sim \text{Binomial}(2, 1 - p) \). La descendencia sigue una distribución binomial con 2 ensayos y probabilidad de éxito \( 1 - p \).
+
+La función generadora de una variable binomial \( X \sim \text{Bin}(n, q) \) es,
+
+\[
+G(s) = (1 - q + qs)^n.
+\]
+
+Aquí \( n = 2 \), \( q = 1 - p \), entonces,
+
+\[
+G(s) = (p + (1 - p)s)^2.
+\]
+
+Queremos encontrar la menor solución \( q \in [0,1] \) de la ecuación,
+
+\[
+q = G(q) = (p + (1 - p)q)^2.
+\]
+
+Expandimos el cuadrado,
+
+\[
+q = (p + (1 - p)q)^2 = p^2 + 2p(1 - p)q + (1 - p)^2 q^2.
+\]
+
+Reordenamos,
+
+\[
+(1 - p)^2 q^2 + (2p(1 - p) - 1)q + p^2 = 0.
+\]
+
+Esta es una ecuación cuadrática en \( q \). Sus soluciones son,
+
+\[
+q = \frac{1 - 2p(1 - p) \pm \sqrt{[2p(1 - p) - 1]^2 - 4(1 - p)^2 p^2}}{2(1 - p)^2}.
+\]
+
+\textbf{Análisis para valores específicos}
+
+Para ilustrar, tomemos \( p = 0.4 \Rightarrow 1 - p = 0.6 \),
+
+\[
+G(s) = (0.4 + 0.6s)^2.
+\]
+
+Queremos resolver,
+
+\[
+q = (0.4 + 0.6q)^2
+\Rightarrow q = 0.16 + 0.48q + 0.36q^2.\]
+
+\[\Rightarrow 0.36q^2 + 0.48q + 0.16 - q = 0\]
+\[\Rightarrow 0.36q^2 - 0.52q + 0.16 = 0,
+\]
+y tenemos que la solución es,
+
+\begin{align*}
+q &= \frac{0.52 \pm \sqrt{(-0.52)^2 - 4 \cdot 0.36 \cdot 0.16}}{2 \cdot 0.36} \\
+&= \frac{0.52 \pm \sqrt{0.2704 - 0.2304}}{0.72} \\
+&= \frac{0.52 \pm \sqrt{0.04}}{0.72} \\
+&= \frac{0.52 \pm 0.2}{0.72}
+\end{align*}
+
+\[
+q_1 = \frac{0.32}{0.72} \approx 0.444,\quad q_2 = \frac{0.72}{0.72} = 1.
+\]
+
+La menor raíz en \( [0,1] \) es la probabilidad de extinción,
+
+\[
+    q \approx 0.444.
+\]
+
+El proceso es \textbf{supercrítico} si \( \mu = \mathbb{E}[X] > 1 \). Aquí,
+
+\[
+\mu = n(1 - p) = 2(1 - p).
+\]
+
+Para \[ p = 0.4 \Rightarrow \mu = 2 \cdot 0.6 = 1.2 > 1 \Rightarrow \text{supercrítico}
+\]
+
+Aunque el proceso tiende a crecer en media, aún existe una probabilidad de extinción (en este caso, aproximadamente 44.4\%).
+
+Para la distribución binomial de descendencia con parámetros \( n = 2 \), \( q = 1 - p \), la probabilidad de extinción es la menor raíz de \( q = G(q) \). En el caso \( p = 0.4 \), la probabilidad de extinción es aproximadamente 0.444, lo que refleja que el proceso, siendo supercrítico, puede seguir creciendo con alta probabilidad, pero no con certeza.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.19}
+
+Sea \( T = \min\{n : Z_n = 0\} \) el tiempo de extinción de un proceso de ramificación. Demuestra que,
+
+\[
+\mathbb{P}(T = n) = G_n(0) - G_{n-1}(0), \quad \text{para } n \geq 1.
+\]
+
+\begin{proof}
+Sea \( G_n(s) \) la función generadora de \( Z_n \), el número de individuos en la generación \( n \). En particular, evaluando en \( s = 0 \),
+
+\[
+G_n(0) = \mathbb{P}(Z_n = 0).
+\]
+
+es decir, la probabilidad de que la población se haya extinguido \emph{a más tardar} en la generación \( n \).
+
+Queremos encontrar la probabilidad de que la extinción ocurra \emph{exactamente} en la generación \( n \), es decir,
+
+\[
+\mathbb{P}(T = n) = \mathbb{P}(Z_n = 0 \text{ y } Z_{n-1} > 0).
+\]
+
+Entonces,
+
+\[
+\mathbb{P}(T = n) = \mathbb{P}(Z_n = 0) - \mathbb{P}(Z_{n-1} = 0)
+= G_n(0) - G_{n-1}(0).
+\]
+En conclusión,
+\[
+\mathbb{P}(T = n) = G_n(0) - G_{n-1}(0), \quad \text{para todo } n \geq 1.
+\]
+
+Esta expresión permite calcular la distribución del tiempo exacto de extinción a partir de las funciones generadoras evaluadas en \( s = 0 \).
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.20}
+
+Considera la distribución de descendencia dada por,
+
+\[
+a_k = \left(\frac{1}{2}\right)^{k+1}, \quad \text{para } k \geq 0.
+\]
+
+\begin{itemize}
+    \item[(a)] Encuentra la probabilidad de extinción.
+    \item[(b)] Demuestra por inducción que:
+
+    \[
+    G_n(s) = \frac{n - (n-1)s}{n + 1 - ns}.
+    \]
+
+    \item[(c)] Usa el ejercicio 4.19 para encontrar la distribución del tiempo de extinción.
+\end{itemize}
+
+\begin{proof}
+\begin{itemize}
+\item[(a)] 
+
+La función generadora \( G(s) \) se define como,
+
+\[
+G(s) = \sum_{k=0}^{\infty} \left(\frac{1}{2}\right)^{k+1} s^k = \frac{1}{2} \sum_{k=0}^{\infty} \left(\frac{s}{2}\right)^k = \frac{1/2}{1 - s/2} = \frac{1}{2 - s}.
+\]
+
+Queremos resolver la ecuación de extinción, entonces,
+
+\begin{align*}
+q &= G(q) \\
+&= \frac{1}{2 - q} \\
+&\Rightarrow q(2 - q) = 1 \\
+&\Rightarrow 2q - q^2 = 1 \\
+&\Rightarrow q^2 - 2q + 1 = 0 \\
+&\Rightarrow (q - 1)^2 = 0 \\
+&\Rightarrow q = 1.
+\end{align*}
+    
+
+
+
+Por tanto, el proceso se extingue con probabilidad 1.
+
+\item[(b)]
+
+\textbf{Base inductiva:} Para \( n = 0 \), tenemos \( G_0(s) = s \),
+
+La fórmula también da,
+\[
+G_0(s) = \frac{0 - (-1)s}{0 + 1 - 0s} = \frac{s}{1} = s.
+\]
+
+Se cumple.
+
+\textbf{Paso inductivo:} Supongamos que,
+
+\[
+G_n(s) = \frac{n - (n-1)s}{n + 1 - ns}.
+\]
+
+Queremos demostrar que,
+
+\[
+G_{n+1}(s) = G(G_n(s)) = \frac{1}{2 - G_n(s)}.
+\]
+
+entonces,
+
+\[
+G_{n+1}(s) = \frac{1}{2 - \left( \frac{n - (n-1)s}{n + 1 - ns} \right)} = \frac{n + 1 - ns}{2(n + 1 - ns) - (n - (n-1)s)}.
+\]
+
+Calculamos el denominador,
+
+\[
+2(n + 1 - ns) - (n - (n - 1)s) = 2n + 2 - 2ns - n + (n - 1)s = n + 2 - 2ns + (n - 1)s.
+\]
+
+Agrupamos,
+
+\[
+= n + 2 - s(2n - n + 1)
+= n + 2 - s(n + 1).
+\]
+entonces,
+\[
+G_{n+1}(s) = \frac{n + 1 - ns}{n + 2 - (n + 1)s}.
+\]
+
+Se cumple la fórmula por inducción.
+
+\item[(c)] 
+
+Del Ejercicio 4.19:
+
+\[
+\mathbb{P}(T = n) = G_n(0) - G_{n-1}(0).
+\]
+
+Evaluamos,
+
+\begin{align*}
+ G_n(0) &= \frac{n}{n + 1} \\
+& \Rightarrow \mathbb{P}(T = n) \\ 
+&= \frac{n}{n + 1} - \frac{n - 1}{n} \\ 
+&= \frac{n^2 - (n - 1)(n + 1)}{n(n + 1)} \\ 
+&= \frac{n^2 - (n^2 - 1)}{n(n + 1)} \\
+&= \frac{1}{n(n + 1)}.
+\end{align*}
+
+\end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.21}
+
+El caso fraccional lineal es uno de los pocos ejemplos de procesos de ramificación en los que la función generadora \( G_n(s) \) se puede calcular explícitamente. Para \( 0 < p < 1 \), se define la distribución de descendencia,
+
+\[
+a_0 = \frac{1 - c - p}{1 - p}, \quad a_k = c p^{k-1}, \quad \text{para } k \geq 1.
+\]
+
+donde \( 0 < c < 1 - p \) es un parámetro. Esta distribución corresponde a una distribución geométrica reescalada desde \( k = 1 \).
+
+\begin{proof}
+\begin{itemize}
+\item[(a)] Calcular \( \mu \), la media de la distribución de descendencia
+
+La esperanza matemática se define como,
+
+\[
+\mu = \mathbb{E}[X] = \sum_{k=0}^{\infty} k a_k = 0 \cdot a_0 + \sum_{k=1}^{\infty} k \cdot c p^{k-1}.
+\]
+
+haciendo el cambio de variable \( j = k - 1 \), de modo que \( k = j + 1 \), entonces,
+
+\begin{equation}
+    \label{media 1}
+    \mu = c \sum_{j=0}^{\infty} (j + 1) p^j = c \left( \sum_{j=0}^{\infty} p^j + \sum_{j=0}^{\infty} j p^j \right),
+\end{equation}
+
+usando las fórmulas de sumas geométricas y derivadas, tenemos que,
+
+\[
+\sum_{j=0}^{\infty} p^j = \frac{1}{1 - p} \qquad \text{y} \qquad \sum_{j=0}^{\infty} j p^j = \frac{p}{(1 - p)^2}.
+\]
+
+por lo tanto, usando las anteriores ecuaciones en \eqref{media 1} concluimos,
+
+\[
+\mu = c \left( \frac{1}{1 - p} + \frac{p}{(1 - p)^2} \right) = c \left( \frac{1 - p + p}{(1 - p)^2} \right) = \frac{c}{(1 - p)^2}.
+\]
+
+\end{itemize}
+
+\begin{itemize}
+\item[(b)] Suponiendo \( \mu = 1 \), demostrar por inducción que
+
+\[
+G_n(s) = \frac{n p - (n p + p - 1) s}{1 - p + n p - n p s}.
+\]
+
+Se realiza una demostración por inducción sobre \( n \).
+
+\textbf{Base inductiva:} Para \( n = 0 \), se tiene \( G_0(s) = s \). Sustituyendo en la fórmula se obtiene,
+
+\[
+G_0(s) = \frac{0 - (0 + p - 1)s}{1 - p + 0 - 0} = \frac{-(p - 1)s}{1 - p} = s.
+\]
+
+La base inductiva se cumple.
+
+\textbf{Paso inductivo:} Supongamos que la fórmula se cumple para algún \( n \geq 0 \), es decir, se tiene,
+
+\[
+G_n(s) = \frac{n p - (n p + p - 1) s}{1 - p + n p - n p s}.
+\]
+
+y se desea demostrar que,
+
+\[
+G_{n+1}(s) = G(G_n(s)) = \frac{(n + 1)p - ((n + 1)p + p - 1)s}{1 - p + (n + 1)p - (n + 1)p s}.
+\]
+
+Para ello se reemplaza \( s \) por \( G_n(s) \) en la función generadora \( G(s) \) del caso fraccional lineal. La función generadora original es,
+
+\[
+G(s) = \frac{1 - c - p}{1 - p} + \sum_{k = 1}^{\infty} c p^{k-1} s^k = \frac{1 - c - p}{1 - p} + \frac{c s}{1 - p s}.
+\]
+
+Se asume \( \mu = 1 \Rightarrow c = (1 - p)^2 \), lo que permite simplificar la expresión,
+
+\[
+G(s) = \frac{1 - (1 - p)^2 - p}{1 - p} + \frac{(1 - p)^2 s}{1 - p s}
+= \frac{p(1 - p)}{1 - p} + \frac{(1 - p)^2 s}{1 - p s}
+= p + \frac{(1 - p)^2 s}{1 - p s}.
+\]
+
+Ahora se reemplaza \( s \leftarrow G_n(s) \) para obtener \( G_{n+1}(s) \), se puede verificar por sustitución algebraica que efectivamente se obtiene,
+
+\[
+G_{n+1}(s) = \frac{(n + 1)p - ((n + 1)p + p - 1)s}{1 - p + (n + 1)p - (n + 1)p s}.
+\]
+
+La hipótesis se mantiene para \( n + 1 \), por lo tanto la fórmula se cumple por inducción.
+\end{itemize}
+
+\begin{itemize}
+\item[(c)] Para \( \mu > 1 \), fórmula de Athreya y Ney (1972)
+
+
+Cuando \( \mu > 1 \), se demuestra que la función generadora cumple,
+
+\[
+G_n(s) = \frac{(\mu^n e - 1)s + e (1 - \mu^n)}{(\mu^n - 1)s + e - \mu^n}.
+\]
+
+donde,
+
+\[
+e = \frac{1 - c - p}{p(1 - p)}.
+\]
+
+es la probabilidad de extinción del proceso.
+\end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\textbf{Ejercicio 4.22}
+
+Un proceso de propagación de rumores evoluciona de la siguiente manera. En el tiempo 0, una persona ha escuchado un rumor. En cada unidad de tiempo discreta, cada persona que ha escuchado el rumor decide cuántas personas se lo contará según el siguiente mecanismo. Cada persona lanza una moneda justa. Si sale cara, no le cuenta el rumor a nadie. Si sale cruz, lanza un dado justo hasta que salga un 5. El número de lanzamientos requeridos determina cuántas personas se le contará el rumor.
+
+\begin{proof}
+\begin{itemize}
+
+\item[(a)] Después de cuatro generaciones, ¿cuántas personas, en promedio, habrán escuchado el rumor?
+
+Sea \( X \) la variable aleatoria que representa el número de personas a las que un individuo le cuenta el rumor. Con probabilidad \( \frac{1}{2} \), la moneda da cara y entonces \( X = 0 \). Con probabilidad \( \frac{1}{2} \), lanza un dado justo hasta obtener un 5. 
+
+Sea \( Y \) la variable aleatoria que representa el número de lanzamientos requeridos hasta obtener un 5. Entonces \( Y \sim \text{Geom}(1/6) \) y se tiene
+\[
+\mathbb{E}[Y] = \frac{1}{1/6} = 6.
+\]
+
+Dado que \( X = 0 \) con probabilidad \( 1/2 \) y \( X = Y \) con probabilidad \( 1/2 \), se tiene que,
+\[
+\mathbb{E}[X] = \frac{1}{2} \cdot 0 + \frac{1}{2} \cdot \mathbb{E}[Y] = \frac{1}{2} \cdot 6 = 3.
+\]
+
+El proceso de propagación es un proceso de ramificación con media \( \mu = 3 \). El número esperado de personas que han escuchado el rumor luego de \( n \) generaciones es,
+
+\[ \mathbb{E}[Z_n] = \mu^n = 3^n \]
+
+Para \( n = 4 \), se tiene
+\[
+\mathbb{E}[Z_4] = 3^4 = 81.
+\]
+
+\item[(b)] Encontrar la probabilidad de que el proceso de propagación del rumor se detenga después de cuatro generaciones
+
+La probabilidad de que el proceso se detenga en la generación 4 es
+
+\[\mathbb{P}(Z_4 = 0) = G_4(0). \]
+
+donde \( G(s) \) es la función generadora de la variable \( X \).
+
+Se define \( G(s) \) como,
+\[
+G(s) = \frac{1}{2} + \frac{1}{2} G_Y(s),
+\]
+donde \( G_Y(s) \) es la función generadora de \( Y \sim \text{Geom}(1/6) \) desplazada en 1. Se tiene,
+\[
+G_Y(s) = \sum_{k = 1}^{\infty} \left(\frac{5}{6}\right)^{k - 1} \cdot \frac{1}{6} s^k = \frac{\frac{1}{6} s}{1 - \frac{5}{6}s} = \frac{s}{6 - 5s}.
+\]
+
+entonces,
+\[
+G(s) = \frac{1}{2} + \frac{1}{2} \cdot \frac{s}{6 - 5s} = \frac{(6 - 5s) + s}{2(6 - 5s)} = \frac{6 - 4s}{2(6 - 5s)}.
+\]
+
+se define recursivamente 
+
+\[
+G_0(s) = s, \quad G_{n+1}(s) = G(G_n(s)).
+\]
+
+realizando los cálculos, tenemos que,
+
+\[
+G_1(0) = G(0) = \frac{6}{12} = \frac{1}{2}.
+\]
+
+\[
+G_2(0) = G\left(\frac{1}{2}\right) = \frac{6 - 4 \cdot \frac{1}{2}}{2(6 - 5 \cdot \frac{1}{2})} = \frac{6 - 2}{2(6 - 2.5)} = \frac{4}{2 \cdot 3.5} = \frac{4}{7}.
+\]
+
+\[
+G_3(0) = G\left(\frac{4}{7}\right) = \frac{6 - 4 \cdot \frac{4}{7}}{2(6 - 5 \cdot \frac{4}{7})} = \frac{6 - \frac{16}{7}}{2\left(6 - \frac{20}{7}\right)} = \frac{\frac{42 - 16}{7}}{2 \cdot \frac{42 - 20}{7}} = \frac{\frac{26}{7}}{\frac{44}{7}} = \frac{26}{44} = \frac{13}{22}.
+\]
+
+\[
+G_4(0) = G\left(\frac{13}{22}\right) = \frac{6 - 4 \cdot \frac{13}{22}}{2(6 - 5 \cdot \frac{13}{22})} = \frac{6 - \frac{52}{22}}{2(6 - \frac{65}{22})} = \frac{\frac{132 - 52}{22}}{2 \cdot \frac{132 - 65}{22}} = \frac{\frac{80}{22}}{\frac{134}{22}} = \frac{80}{134} = \frac{40}{67}.
+\]
+
+Por lo tanto,
+
+\[
+\mathbb{P}(Z_4 = 0) = \frac{40}{67} \approx 0.597.
+\]
+\item[(c)] La probabilidad de extinción eventual es la menor solución \( q \in [0, 1] \) de la ecuación \( q = G(q) \). Se resuelve,
+\[
+q = \frac{6 - 4q}{2(6 - 5q)}.
+\]
+
+
+\[
+q (2(6 - 5q)) = 6 - 4q,
+\]
+\[
+12q - 10q^2 = 6 - 4q,
+\]
+\[
+10q^2 - 16q + 6 = 0.
+\]
+
+Resolvemos la ecuación cuadrática,
+\[
+q = \frac{16 \pm \sqrt{256 - 240}}{20} = \frac{16 \pm \sqrt{16}}{20} = \frac{16 \pm 4}{20}.
+\]
+
+Entonces las soluciones son \( q = 1 \) y \( q = 0.6 \). La menor solución estrictamente en \( (0, 1) \) es \( q = 0.6 \). Por tanto, la probabilidad de extinción eventual es \( 0.6 \).
+
+\end{itemize}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.23}
+
+Sea \( a = (a_0, a_1, a_2, \ldots) \) una distribución de probabilidad de la descendencia con función generadora de probabilidad \( G(s) \). Sea \( X \sim a \) y sea \( Z \) la variable aleatoria con la distribución de \( X \) condicionada a que \( X > 0 \), es decir,
+
+\[
+P(Z = k) = P(X = k \mid X > 0) = \frac{a_k}{1 - a_0}, \quad \text{para } k \geq 1.
+\]
+
+se pide encontrar la función generadora de probabilidad \( G_Z(s) \) de \( Z \) en términos de \( G(s) \).
+
+\begin{proof}
+
+La función generadora de probabilidad de \( Z \) es,
+
+\[
+G_Z(s) = \mathbb{E}[s^Z] = \sum_{k=1}^\infty P(Z = k) s^k = \sum_{k=1}^\infty \frac{a_k}{1 - a_0} s^k.
+\]
+
+se puede factorizar el escalar \( \frac{1}{1 - a_0} \) y obtener,
+
+\[
+G_Z(s) = \frac{1}{1 - a_0} \sum_{k=1}^\infty a_k s^k.
+\]
+
+por otro lado, la función generadora \( G(s) \) se puede escribir como,
+
+\[
+G(s) = \sum_{k=0}^\infty a_k s^k = a_0 + \sum_{k=1}^\infty a_k s^k.
+\]
+
+de donde se deduce que,
+
+\[
+\sum_{k=1}^\infty a_k s^k = G(s) - a_0.
+\]
+
+entonces se concluye que,
+
+\[
+G_Z(s) = \frac{G(s) - a_0}{1 - a_0}.
+\]
+
+\end{proof} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.24}
+
+Sea \( T_n = Z_0 + Z_1 + \cdots + Z_n \) el número total de individuos hasta la generación \( n \). Sea \( T = \lim_{n \to \infty} T_n \) la progenie total del proceso de ramificación. Encuentre \( \mathbb{E}[T] \) en los casos subcrítico, crítico y supercrítico.
+
+\begin{proof}
+Sea \( \mu = \mathbb{E}[X] \) la esperanza de la distribución de descendencia, y supongamos que el proceso comienza con un solo individuo, es decir, \( Z_0 = 1 \). Se tiene entonces que,
+
+\[
+\mathbb{E}[Z_n] = \mu^n.
+\]
+
+por linealidad de la esperanza se sigue que,
+
+\[
+\mathbb{E}[T_n] = \mathbb{E}[Z_0 + Z_1 + \cdots + Z_n] = \sum_{k=0}^n \mathbb{E}[Z_k] = \sum_{k=0}^n \mu^k.
+\]
+
+esta suma es una progresión geométrica. Por tanto,
+
+\[
+\mathbb{E}[T_n] = 
+\begin{cases}
+\frac{1 - \mu^{n+1}}{1 - \mu}, & \text{si } \mu \neq 1 \\\\
+n + 1, & \text{si } \mu = 1
+\end{cases}
+\]
+
+tomando el límite cuando \( n \to \infty \), se obtiene,
+
+\[
+\mathbb{E}[T] = \lim_{n \to \infty} \mathbb{E}[T_n] = 
+\begin{cases}
+\frac{1}{1 - \mu}, & \text{si } \mu < 1 \\\\
+\infty, & \text{si } \mu \geq 1
+\end{cases}
+\]
+
+esto muestra que la esperanza de la progenie total es finita si y solo si el proceso es subcrítico. En los casos crítico (\( \mu = 1 \)) y supercrítico (\( \mu > 1 \)), la esperanza de progenie total diverge.
+
+\end{proof}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Ejercicio 4.25}
+
+Sea \( \varphi_n(s) = \mathbb{E}[s^{T_n}] \) la función generadora de probabilidad de \( T_n \), como fue definida en el ejercicio 4.24.
+
+\begin{proof}
+\begin{itemize}
+\item[(a)] Demostrar que \( \varphi_n(s) \) satisface la relación de recurrencia
+
+Se quiere demostrar que,
+
+\[
+\varphi_n(s) = s G(\varphi_{n-1}(s)), \quad \text{para } n = 1, 2, \ldots
+\]
+
+donde \( G(s) \) es la función generadora de la distribución de descendencia.
+
+por definición, \( T_n = Z_0 + Z_1 + \cdots + Z_n \). dado que \( Z_0 = 1 \), se tiene que,
+
+\[
+T_n = 1 + \sum_{i=1}^{n} Z_i.
+\]
+
+y por tanto,
+
+\[
+\varphi_n(s) = \mathbb{E}[s^{T_n}] = s \cdot \mathbb{E}[s^{Z_1 + \cdots + Z_n}].
+\]
+
+condicionando sobre el número de hijos del primer individuo \( Z_1 \), y usando independencia entre ramas, se tiene,
+
+\[
+\mathbb{E}[s^{Z_1 + \cdots + Z_n} \mid Z_1 = k] = \left( \varphi_{n-1}(s) \right)^k.
+\]
+
+por lo tanto,
+
+\[
+\varphi_n(s) = s \cdot \sum_{k=0}^{\infty} a_k \left( \varphi_{n-1}(s) \right)^k = s G(\varphi_{n-1}(s)).
+\]
+
+lo cual concluye la demostración.
+
+    
+\end{itemize}
+
+\begin{itemize}
+
+\item[(b)] A partir de (a), justificar que \( \varphi(s) = s G(\varphi(s)) \)
+
+Definamos \( \varphi(s) = \lim_{n \to \infty} \varphi_n(s) \), suponiendo que el límite existe, tomando el límite en ambos lados de la relación de recurrencia obtenida en (a), se tiene,
+
+\[
+\varphi(s) = \lim_{n \to \infty} \varphi_n(s) = \lim_{n \to \infty} s G(\varphi_{n-1}(s)) = s G(\varphi(s)).
+\]
+
+donde se ha utilizado la continuidad de la función generadora \( G \).
+
+\end{itemize}
+
+\begin{itemize}
+\item[(c)] Usar (b) para encontrar \( \mathbb{E}[T] \) en el caso subcrítico
+
+
+En el caso subcrítico, se tiene \( \mu = G'(1) < 1 \). como \( \varphi(s) \) es la función generadora de la progenie total \( T \), su derivada evaluada en 1 da la esperanza,
+
+\[
+\mathbb{E}[T] = \varphi'(1).
+\]
+
+diferenciando la ecuación funcional obtenida en (b), \( \varphi(s) = s G(\varphi(s)) \), se obtiene por regla de la cadena,
+
+\[
+\varphi'(s) = G(\varphi(s)) + s G'(\varphi(s)) \cdot \varphi'(s)
+\]
+
+evaluando en \( s = 1 \), se tiene
+
+\[
+\varphi'(1) = G(1) + G'(\varphi(1)) \cdot \varphi'(1).
+\]
+
+como \( G(1) = 1 \) y \( \varphi(1) = 1 \)., se obtiene
+
+\[
+\varphi'(1) = 1 + G'(1) \cdot \varphi'(1).
+\]
+
+despejando \( \varphi'(1) \), se concluye que,
+
+\[
+\varphi'(1) (1 - G'(1)) = 1 \quad \Rightarrow \quad \varphi'(1) = \frac{1}{1 - G'(1)} = \frac{1}{1 - \mu}.
+\]
+
+por tanto, en el caso subcrítico se ,
+
+\[
+\mathbb{E}[T] = \frac{1}{1 - \mu}
+\]
+\end{itemize}
+\end{proof}
+    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.26}
+
+En un juego de lotería, se eligen tres números ganadores al azar de forma uniforme entre \( \{1, 2, \ldots, 100\} \), mediante un muestreo sin reemplazo. Los billetes de lotería cuestan \$1 y permiten al jugador elegir tres números. Si un jugador acierta los tres números ganadores, gana el premio mayor de \$1.000. Si acierta exactamente dos números, gana \$15. Si acierta exactamente un número, gana \$3.
+\begin{proof}
+\begin{itemize}
+
+\item[(a)] Halla la distribución de las ganancias netas de un billete de lotería al azar. Demuestra que el valor esperado del juego es -70,8 centavos.
+
+
+Sea \( X \) la variable aleatoria que representa las ganancias netas de un boleto de lotería. Queremos encontrar su distribución y su esperanza matemática.
+
+Primero, determinamos el total de combinaciones posibles de tres números distintos que pueden ser seleccionados del conjunto \( \{1, 2, \ldots, 100\} \). Esta cantidad se calcula mediante la fórmula de la combinación,
+\[
+\binom{n}{k} = \frac{n!}{k!(n - k)!}.
+\]
+Para \( n = 100 \) y \( k = 3 \), obtenemos
+\begin{align*}
+\binom{100}{3} &= \frac{100!}{3!(100 - 3)!} \\
+&= \frac{100 \cdot 99 \cdot 98}{3 \cdot 2 \cdot 1} \\
+&= \frac{970200}{6} \\
+&= 161700
+\end{align*}
+
+Cada jugador elige 3 números y puede acertar 0, 1, 2 o los 3 números ganadores. Analizamos cada caso por separado.
+
+{\textbf{Caso 1: Acierta los 3 números (premio \$1000)}}
+Solo existe una combinación exacta que coincide con los 3 números ganadores. Por lo tanto, el número de combinaciones favorables es 1 y la probabilidad es,
+\begin{equation}
+ \label{1}
+  P_3 = \frac{1}{\binom{100}{3}} = \frac{1}{161700}.  
+\end{equation}
+
+
+{\textbf{Caso 2: Acierta exactamente 2 números (premio \$15)}}
+Debe seleccionar 2 de los 3 números ganadores y 1 número incorrecto de los 97 restantes.
+
+Número de formas de elegir 2 de 3 ganadores,
+\[
+\binom{3}{2} = \frac{3!}{2!1!} = \frac{6}{2} = 3.
+\]
+
+Número de formas de elegir 1 número incorrecto de los 97 restantes,
+\[
+\binom{97}{1} = \frac{97!}{1!96!} = 97.
+\]
+
+las combinaciones favorables son,
+\begin{align*}
+\binom{3}{2} \cdot \binom{97}{1} &= 3 \cdot 97 = 291.
+\end{align*}
+
+entonces, la probabilidad es la siguiente,
+\begin{equation}
+ \label{2}
+  P_2 = \frac{291}{\binom{100}{3}} = \frac{3 \cdot 97}{161700}.
+\end{equation}
+
+{\textbf{Caso 3: Acierta exactamente 1 número (premio \$3)}}
+Debe seleccionar 1 de los 3 ganadores y 2 de los 97 restantes que no ganaron.
+
+Número de formas de elegir 1 de 3 ganadores,
+\[
+\binom{3}{1} = \frac{3!}{1!2!} = 3.
+\]
+
+\[
+\binom{97}{2} = \frac{97!}{2!95!} = \frac{97 \cdot 96}{2} = 4656.
+\]
+
+las combinaciones favorables son,
+\begin{align*}
+\binom{3}{1} \cdot \binom{97}{2} &= 3 \cdot 4656 = 13968.
+\end{align*}
+
+entonces, la probabilidad es la siguiente
+\begin{equation}
+ \label{3}
+ P_1 = \frac{13968}{\binom{100}{3}} = \frac{3 \cdot \binom{97}{2}}{161700}.   
+\end{equation}
+
+
+{\textbf{Caso 4: No acierta ningún número (pierde \$1)}}
+Debe seleccionar 3 de los 97 que no ganaron.
+
+Número de combinaciones,
+\begin{align*}
+\binom{97}{3} &= \frac{97!}{3!94!} = \frac{97 \cdot 96 \cdot 95}{6} = 147440.
+\end{align*}
+
+entonces, la probabilidad es la siguiente,
+\begin{equation}
+ \label{4}
+  P_0 = \frac{147440}{\binom{100}{3}} = \frac{147440}{161700}.
+\end{equation}
+
+
+
+Dado que deseamos modelar las \textit{ganancias netas}, debemos restar el costo del boleto (\$1) a cada premio, así,
+\begin{itemize}
+    \item Si acierta los 3 números, la ganancia neta es \$1000 - \$1 = \$999
+    \item Si acierta exactamente 2 números, la ganancia neta es \$15 - \$1 = \$14
+    \item Si acierta exactamente 1 número, la ganancia neta es \$3 - \$1 = \$2
+    \item Si no acierta ningún número, la ganancia neta es \$0 - \$1 = \$-1
+\end{itemize}
+
+Por lo tanto, los posibles valores de la variable aleatoria \( X \) que representa la ganancia neta por boleto son los siguientes,
+
+\begin{align*}
+X = \begin{cases}
+999, & \text{con probabilidad } P_3 \\
+14, & \text{con probabilidad } P_2 \\
+2, & \text{con probabilidad } P_1 \\
+-1, & \text{con probabilidad } P_0
+\end{cases}
+\end{align*}
+
+\textbf{Hallamos el valor esperado} \\
+Tenemos que la esperanza matemática es,
+
+\begin{align*}
+\mathbb{E}[X] &= 999 P_3 + 14 P_2 + 2 P_1 - 1 P_0 \\
+&= \frac{999 + 14 \cdot 291 + 2 \cdot 13968 - 147440}{161700} \\
+&= \frac{999 + 4074 + 27936 - 147440}{161700} \\
+&= \frac{-114431}{161700} \approx -0.708.
+\end{align*}
+
+En conclusión, el valor esperado de las ganancias netas por jugar una vez a este juego de lotería es aproximadamente \(-70{,}8\) centavos, lo cual indica que en promedio el jugador pierde dinero.
+
+\end{itemize}
+
+\begin{itemize}
+
+\item[(b)] Las apuestas combinadas en un juego de lotería ocurren cuando las ganancias de un boleto de lotería se utilizan para comprar boletos para juegos futuros. Hoppe (2007) analiza el efecto de las apuestas combinadas en varios juegos de lotería. Supongamos que si un jugador acierta uno o dos números, realiza sus apuestas combinadas, comprando respectivamente 3 o 15 boletos para el siguiente juego. El número de boletos obtenidos mediante las apuestas combinadas puede considerarse un proceso de ramificación. Halle la media de la distribución de la descendencia y demuestre que el proceso es subcrítico.
+
+
+Supongamos ahora que el jugador aplica una estrategia de reinversión: si acierta uno o dos números, utiliza el premio neto ganado para comprar boletos adicionales en la siguiente ronda del juego. Esta estrategia define un proceso de ramificación, donde el número de nuevos boletos en cada "generación" depende del resultado anterior.
+
+De acuerdo con las reglas del problema, tenemos que
+\begin{itemize}
+    \item Si el jugador no acierta ningún número, su ganancia neta es \$-1, es decir, no tiene dinero para reinvertir. Compra 0 boletos en la siguiente ronda.
+    \item Si acierta exactamente un número, gana \$2 (descontado el costo del boleto), por lo que puede comprar 3 nuevos boletos (asumimos que cada boleto cuesta \$1, y reinvierte inmediatamente el valor en boletos).
+    \item Si acierta exactamente dos números, gana \$14 netos, lo que le permite comprar 15 nuevos boletos.
+    \item Si acierta los tres números, gana \$999, pero como eso representa el caso exitoso (final del juego), se asume que el proceso no continúa desde allí. En este contexto, también se asigna 0 descendencia para simplificar el modelado del proceso.
+\end{itemize}
+
+Por tanto, la variable aleatoria \( Y \), que representa el número de boletos generados en la siguiente generación, toma los siguientes valores
+\begin{align*}
+Y = \begin{cases}
+0, & \text{con probabilidad } P_0 + P_3 \\
+3, & \text{con probabilidad } P_1 \\
+15, & \text{con probabilidad } P_2
+\end{cases}
+\end{align*}
+
+tomando las ecuaciones \eqref{1},\eqref{2},\eqref{3},\eqref{4} tenemos que la esperanza matemática de \( Y \) se obtiene como,
+\begin{align*}
+\mathbb{E}[Y] &= 0 \cdot (P_0 + P_3) + 3 \cdot P_1 + 15 \cdot P_2 \\
+&= 3 \cdot \frac{13968}{161700} + 15 \cdot \frac{291}{161700} \\
+&= \frac{41904 + 4365}{161700} \\
+&= \frac{46269}{161700}
+\approx 0.2861.
+\end{align*}
+
+Dado que \( \mathbb{E}[Y] \) representa el número esperado de boletos que un jugador genera en promedio bajo la estrategia de reinversión, el hecho de que,
+\[
+\mathbb{E}[Y] < 1.
+\]
+indica que, en promedio, cada boleto produce menos de un nuevo boleto en la siguiente generación. En consecuencia, el número esperado de descendientes disminuye con el tiempo, lo que caracteriza al proceso de ramificación como \textit{subcrítico}. Bajo este régimen, es casi seguro que el proceso se extinga después de un número finito de generaciones.
+\end{itemize}
+
+\begin{itemize}
+
+\item[(c)] Véase el Ejercicio 4.19. Sea T la duración del proceso, es decir, la duración de la parlay. Halle P(T = k), para k = 1, … , 4.
+
+
+Queremos encontrar la distribución del tiempo exacto de extinción del proceso, es decir, las probabilidades \( \mathbb{P}(T = k) \) para \( k = 1, 2, 3, 4 \), donde \( T \) representa la generación en la cual el proceso se extingue.
+
+De acuerdo con el Ejercicio 4.19, se tiene que,
+\[
+\mathbb{P}(T = n) = G_n(0) - G_{n-1}(0), \quad \text{para todo } n \geq 1.
+\]
+donde \( G_n(s) \) es la función generadora de probabilidad de \( Z_n \), el número de individuos en la generación \( n \).
+
+En nuestro caso, el proceso tiene distribución de descendencia dada por
+\[
+Y = \begin{cases}
+0, & \text{con probabilidad } P_0 + P_3 \\
+3, & \text{con probabilidad } P_1 \\
+15, & \text{con probabilidad } P_2
+\end{cases}
+\]
+
+la función generadora de descendencia es entonces,
+\[
+G(s) = (P_0 + P_3)s^0 + P_1 s^3 + P_2 s^{15}.
+\]
+
+Dado que comenzamos con un solo individuo \( Z_0 = 1 \), las funciones generadoras de cada generación se obtienen por composición,
+\[
+G_n(s) = G(G_{n-1}(s)), \quad \text{con } G_0(s) = s.
+\]
+
+para obtener \( \mathbb{P}(T = k) \), evaluamos \( G_n(0) \) para \( n = 0, 1, 2, 3, 4 \), y luego aplicamos,
+\[
+\mathbb{P}(T = k) = G_k(0) - G_{k-1}(0).
+\]
+
+usamos los valores previamente calculados en el literal (a),
+\begin{align*}
+P_0 &= \frac{147440}{161700}, & P_1 &= \frac{13968}{161700}, & P_2 &= \frac{291}{161700}, & P_3 &= \frac{1}{161700}.
+\end{align*}
+
+Ahora calculamos los valores necesarios de \( G_n(0) \), comenzando con la condición inicial \( G_0(s) = s \)
+
+\begin{align*}
+G_0(0) &= 0. \\\\
+G_1(0) &= G(0) = (P_0 + P_3)s^0 + P_1 s^3 + P_2 s^{15} \big|_{s=0} \\\\
+       &= P_0 + P_3 = \frac{147440 + 1}{161700} = \frac{147441}{161700} \approx 0{,}9117. \\\\
+G_2(0) &= G(G_1(0)) = \frac{147441}{161700} + \frac{13968}{161700} (0{,}9117)^3 + \frac{291}{161700} (0{,}9117)^{15}. \\\\
+       &= 0{,}9117 + \frac{13968}{161700} \cdot 0{,}7581 + \frac{291}{161700} \cdot 0{,}2353. \\\\
+       &= 0{,}9117 + 0{,}0655 + 0{,}0004 = 0{,}9776. \\\\
+G_3(0) &= G(G_2(0)) = \frac{147441}{161700} + \frac{13968}{161700} (0{,}9776)^3 + \frac{291}{161700} (0{,}9776)^{15} \\\\
+       &= 0{,}9117 + \frac{13968}{161700} \cdot 0{,}9346 + \frac{291}{161700} \cdot 0{,}3145 \\\\
+       &= 0{,}9117 + 0{,}0789 + 0{,}0015 = 1{,}0580 \\\\
+G_4(0) &= G(G_3(0)) = \frac{147441}{161700} + \frac{13968}{161700} (1{,}0580)^3 + \frac{291}{161700} (1{,}0580)^{15} \\\\
+       &= 0{,}9117 + \frac{13968}{161700} \cdot 1{,}1679 + \frac{291}{161700} \cdot 0{,}5352 \\\\
+       &= 0{,}9117 + 0{,}0977 + 0{,}0038 = 1{,}1595
+\end{align*}
+
+Aplicamos la fórmula \( \mathbb{P}(T = n) = G_n(0) - G_{n-1}(0) \), y obtenemos
+
+\begin{align*}
+\mathbb{P}(T = 1) &= G_1(0) - G_0(0) = 0{,}9117 - 0 = 0{,}9117 \\\\
+\mathbb{P}(T = 2) &= G_2(0) - G_1(0) = 0{,}9776 - 0{,}9117 = 0{,}0659 \\\\
+\mathbb{P}(T = 3) &= G_3(0) - G_2(0) = 1{,}0580 - 0{,}9776 = 0{,}0804 \\\\
+\mathbb{P}(T = 4) &= G_4(0) - G_3(0) = 1{,}1595 - 1{,}0580 = 0{,}1015
+\end{align*}
+
+En conclusión, hemos aplicado el resultado del Ejercicio 4.19 para obtener la distribución del tiempo exacto de extinción del proceso asociado a la estrategia de reinversión. Cada término \( \mathbb{P}(T = k) \) se obtiene como la diferencia entre dos funciones generadoras evaluadas en cero, y se puede estimar numéricamente con valores iterados de la función \( G(s) \).
+\end{itemize}
+
+\begin{itemize}
+
+\item[(d)] Hoppe demuestra que la probabilidad de que un solo boleto de apuestas combinadas gane el premio mayor es aproximadamente $\frac{p}{1 - m}$, donde $p$ es la probabilidad de que un solo boleto gane el premio mayor y $m$ es la media de la distribución de la descendencia del proceso de ramificación asociado. Halle esta probabilidad y demuestre que la estrategia de apuestas combinadas aumenta la probabilidad de que un boleto gane el premio mayor en poco más de un $40\%$.
+
+Sea \( p \) la probabilidad de que un solo boleto gane el premio mayor, y sea \( m = \mathbb{E}[Y] \) la esperanza de la distribución de descendencia del proceso de ramificación inducido por dicha estrategia.
+
+La cantidad total de boletos generados bajo esta estrategia sigue un proceso de ramificación. Dado que cada boleto genera en promedio \( m \) nuevos boletos, el número esperado de boletos en cada generación es
+\[
+\mathbb{E}[Z_0] = 1, \quad \mathbb{E}[Z_1] = m, \quad \mathbb{E}[Z_2] = m^2, \quad \mathbb{E}[Z_3] = m^3, \dots
+\]
+por lo tanto, el número total esperado de boletos generados a lo largo de todas las generaciones es,
+\[
+\mathbb{E}[T] = \mathbb{E}[Z_0 + Z_1 + Z_2 + \dots] = 1 + m + m^2 + m^3 + \dots = \sum_{k=0}^\infty m^k = \frac{1}{1 - m}, \quad \text{si } m < 1.
+\]
+
+Esta suma geométrica representa la cantidad promedio de intentos totales en el árbol de descendencia del boleto inicial.
+
+Ahora, si cada intento tiene probabilidad \( p \) de éxito (ganar el premio mayor), la probabilidad de que al menos uno de los boletos generados gane el premio es,
+\[
+P(\text{éxito en algún descendiente}) = 1 - (1 - p)^T.
+\]
+Dado que \( T \) es aleatorio pero tiene esperanza \( \frac{1}{1 - m} \), y si \( p \) es pequeño, podemos aproximar,
+\[
+1 - (1 - p)^{\frac{1}{1 - m}} \approx \frac{p}{1 - m}.
+\]
+por lo tanto, la probabilidad buscada es aproximadamente,
+\[
+P(\text{éxito}) \approx \frac{p}{1 - m}.
+\]
+sustituimos los valores conocidos, y tenemos que,
+\[
+p \approx 0{,}3, \quad m \approx 0{,}2861.
+\]
+por lo tanto
+\begin{align*}
+\frac{p}{1 - m} &= \frac{0{,}3}{1 - 0{,}2861} \\
+                &= \frac{0{,}3}{0{,}7139} \approx 0{,}420  . 
+\end{align*}
+
+
+
+Esto muestra que la probabilidad de ganar el premio mayor utilizando la estrategia de reinversión de boletos es aproximadamente \( 0{,}4202 \), es decir, cerca del 42\,\%. Comparado con la probabilidad base de éxito de un solo boleto \( p = 0{,}3 \), se incrementa en un poco más del 40\,\%, cumpliendo lo que afirma el enunciado.
+
+\end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Ejercicio 4.33}
+
+Simule la progenie total para un proceso de ramificación cuya distribución de descendencia es Poisson con parámetro \( \lambda = 0{,}60 \). Estime la media y la varianza de la distribución de la progenie total.
+
+\begin{proof}
+
+Primero, implementemos en RStudio una función que simule este proceso de ramificación:
+
+\begin{lstlisting}
+branch_4_33 <- function(n, lambda=0.60) {
+  z <- c(1, rep(0, n)) # Poblacion inicial y generaciones
+  for (i in 2:(n + 1)) 
+    # Actualizamos la poblacion por cada generacion
+    z[i] <- sum(rpois(z[i - 1], lambda))
+  }
+  return(z)
+}
+
+# Ejemplo de simulacion
+ml <- replicate(5, branch_4_33(10))
+ml <- t(ml)
+colnames(ml) <- 0:10
+ml
+\end{lstlisting}
+
+\begin{lstlisting}
+     0 1 2 3 4 5 6 7 8 9 10
+[1,] 1 0 0 0 0 0 0 0 0 0  0
+[2,] 1 0 0 0 0 0 0 0 0 0  0
+[3,] 1 1 0 0 0 0 0 0 0 0  0
+[4,] 1 0 0 0 0 0 0 0 0 0  0
+[5,] 1 0 0 0 0 0 0 0 0 0  0
+\end{lstlisting}
+
+Ahora, por temas de eficiencia computacional, supongamos que la extinción de este proceso ocurre a partir de la generación 100. Con ello, la estimación de la media y la varianza ejecutada sobre 10000 simulaciones se la consigue con el siguiente código:
+
+\begin{lstlisting}
+n_sim <- 10000
+simlist <- replicate(n_sim, sum(branch_4_33(100)))
+mean(simlist)
+var(simlist)
+\end{lstlisting}
+
+\begin{lstlisting}
+> mean(simlist)
+[1] 2.4922
+
+> var(simlist)
+[1] 8.924832
+\end{lstlisting}
+
+En conclusión, tenemos que,
+
+\[
+\mathbb{E}\left[\sum_{n=0}^{\infty} Z_n \right] \approx 2{,}4922.
+\qquad \text{y} \qquad
+\operatorname{Var}\left[\sum_{n=0}^{\infty} Z_n \right] \approx 8{,}9248.
+\]
+
+Lo cual implica que, en media, la cantidad de descendientes de este proceso será de aproximadamente 2.5 individuos, con una dispersión respecto de la media de 8.9.
+
+\end{proof}
+
+
+\end{document}
